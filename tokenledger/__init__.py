@@ -19,4 +19,4 @@ __all__ = [
     "from_records",
     "load_provider",
 ]
-__version__ = "0.1.0"
+__version__ = "0.1.1"

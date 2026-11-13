@@ -103,11 +103,11 @@ Removing an **early** step saves more than a late one — it drops that step's o
 tool result from every later step. That's the superlinearity, made concrete.
 
 ## Why it exists
-See [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) for the measured findings this operationalizes.
+See [`docs/METHODOLOGY.md`](https://github.com/pallav0107/tokenledger/blob/main/docs/METHODOLOGY.md) for the measured findings this operationalizes.
 
 ## Contributing
 Issues and PRs welcome — especially log-format adapters for different providers/harnesses. Keep
 contributions genuinely useful; no telemetry, no secrets in sample data (synthetic only).
 
 ## License
-MIT — see [LICENSE](LICENSE).
+MIT — see [LICENSE](https://github.com/pallav0107/tokenledger/blob/main/LICENSE).
