@@ -1,0 +1,17 @@
+[project]
+name = "tokenledger"
+version = "0.1.0"
+description = "Measure the real cost structure of multi-agent / multi-model LLM systems from request logs."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Pallav Pokhriyal" }]
+keywords = ["llm", "agents", "cost", "tokens", "observability", "mlops"]
+dependencies = []
+
+[project.scripts]
+tokenledger = "tokenledger.report:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
