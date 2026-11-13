@@ -1,5 +1,5 @@
 [project]
-name = "tokenledger"
+name = "tokenledger-llm"
 version = "0.1.0"
 description = "Measure the real cost structure of multi-agent / multi-model LLM systems from request logs."
 readme = "README.md"

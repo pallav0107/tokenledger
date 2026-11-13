@@ -13,6 +13,8 @@ logs and shows you exactly that, so you optimize the right thing.
 
 ## Install
 ```bash
+pip install tokenledger-llm     # on PyPI; the import name and CLI are both `tokenledger`
+# or from source:
 pip install -e .
 ```
 
