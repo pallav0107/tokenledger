@@ -1,0 +1,4 @@
+# synthetic: usage under a custom key, nulls and a missing field, labels
+{"t": 1, "s": 0, "meta": {"input_tokens": 100, "cache_creation_input_tokens": 50, "cache_read_input_tokens": 1000, "output_tokens": 10}, "label": "plan"}
+{"t": 1, "s": 1, "meta": {"input_tokens": 20, "cache_read_input_tokens": null, "output_tokens": 5}}
+{"t": 2, "s": 0, "meta": {"input_tokens": 7}}

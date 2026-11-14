@@ -10,6 +10,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from typing import Dict, List
 
+from .errors import StepNotFoundError, TokenledgerError
 from .parse import Request
 
 
@@ -40,7 +41,7 @@ def _pct(part: int, whole: int) -> float:
 
 def account(requests: List[Request]) -> Metrics:
     if not requests:
-        raise ValueError("no requests to account")
+        raise TokenledgerError("TL_E_NO_REQUESTS", "no requests to account")
 
     total_input = sum(r.input_tokens for r in requests)
     total_output = sum(r.output_tokens for r in requests)
@@ -82,6 +83,6 @@ def what_if_remove_step(requests: List[Request], turn: int, step: int) -> int:
     same_turn = [r for r in requests if r.turn == turn]
     target = next((r for r in same_turn if r.step == step), None)
     if target is None:
-        raise KeyError(f"no step {step} in turn {turn}")
+        raise StepNotFoundError(f"no step {step} in turn {turn}")
     later_steps = [r for r in same_turn if r.step > step]
     return target.input_tokens + target.tool_result_tokens * len(later_steps)

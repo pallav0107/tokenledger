@@ -1,0 +1,7 @@
+# synthetic Anthropic Messages API usage log (NOT real data)
+# note: usage.input_tokens is FRESH input only; cached context is reported separately,
+# so tokenledger sums all three for the true per-request context size.
+{"turn": 1, "step": 0, "usage": {"input_tokens": 20116, "cache_creation_input_tokens": 500, "cache_read_input_tokens": 0, "output_tokens": 120}}
+{"turn": 1, "step": 1, "usage": {"input_tokens": 300, "cache_creation_input_tokens": 1100, "cache_read_input_tokens": 20116, "output_tokens": 95}}
+{"turn": 1, "step": 2, "usage": {"input_tokens": 300, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 22900, "output_tokens": 210}}
+{"turn": 2, "step": 0, "usage": {"input_tokens": 200, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 23800, "output_tokens": 80}}

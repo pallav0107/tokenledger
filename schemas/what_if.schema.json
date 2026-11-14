@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tokenledger/what_if",
+  "title": "tokenledger what-if --json output",
+  "type": "object",
+  "properties": {
+    "turn": {
+      "type": "integer"
+    },
+    "step": {
+      "type": "integer"
+    },
+    "tokens_saved": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "required": [
+    "turn",
+    "step",
+    "tokens_saved"
+  ],
+  "additionalProperties": false
+}

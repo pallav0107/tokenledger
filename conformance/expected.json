@@ -1,0 +1,5123 @@
+{
+ "reference": {
+  "package": "tokenledger-llm",
+  "version": "0.2.0"
+ },
+ "cli": [
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 4\nturns:            2\nsteps per turn:   {1: 3, 2: 1}\n\ntotal input tokens:  89,532\ntotal output tokens: 505\n\ncache-read:               88,432 (98.8% of input)\npriming re-sent:          80,464 (89.9% of input)\nre-carried conversation:  7,968 (8.9% of input)\n\nmean prefix / request: 22,383    max prefix: 24,000\nprefix re-read cost:   88,432 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 4,\n  \"n_turns\": 2,\n  \"steps_per_turn\": {\n    \"1\": 3,\n    \"2\": 1\n  },\n  \"total_input\": 89532,\n  \"total_output\": 505,\n  \"total_cache_read\": 88432,\n  \"cache_read_pct\": 0.987713890005808,\n  \"priming_total\": 80464,\n  \"priming_pct\": 0.8987177768842425,\n  \"conversation_total\": 7968,\n  \"conversation_pct\": 0.08899611312156547,\n  \"mean_prefix\": 22383.0,\n  \"max_prefix\": 24000,\n  \"prefix_reread_cost\": 88432\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/tie_rounding.jsonl"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 4\nturns:            3\nsteps per turn:   {1: 2, 2: 1, 10: 1}\n\ntotal input tokens:  1,000,006\ntotal output tokens: 8\n\ncache-read:               5 (0.0% of input)\npriming re-sent:          1 (0.0% of input)\nre-carried conversation:  2 (0.0% of input)\n\nmean prefix / request: 250,002    max prefix: 1,000,001\nprefix re-read cost:   5 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/tie_rounding.jsonl",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 4,\n  \"n_turns\": 3,\n  \"steps_per_turn\": {\n    \"1\": 2,\n    \"2\": 1,\n    \"10\": 1\n  },\n  \"total_input\": 1000006,\n  \"total_output\": 8,\n  \"total_cache_read\": 5,\n  \"cache_read_pct\": 4.999970000179999e-06,\n  \"priming_total\": 1,\n  \"priming_pct\": 9.999940000359997e-07,\n  \"conversation_total\": 2,\n  \"conversation_pct\": 1.9999880000719995e-06,\n  \"mean_prefix\": 250001.5,\n  \"max_prefix\": 1000001,\n  \"prefix_reread_cost\": 5\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/zero_input.jsonl"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 1\nturns:            1\nsteps per turn:   {1: 1}\n\ntotal input tokens:  0\ntotal output tokens: 0\n\ncache-read:               0 (0.0% of input)\npriming re-sent:          0 (0.0% of input)\nre-carried conversation:  0 (0.0% of input)\n\nmean prefix / request: 0    max prefix: 0\nprefix re-read cost:   0 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/zero_input.jsonl",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 1,\n  \"n_turns\": 1,\n  \"steps_per_turn\": {\n    \"1\": 1\n  },\n  \"total_input\": 0,\n  \"total_output\": 0,\n  \"total_cache_read\": 0,\n  \"cache_read_pct\": 0.0,\n  \"priming_total\": 0,\n  \"priming_pct\": 0.0,\n  \"conversation_total\": 0,\n  \"conversation_pct\": 0.0,\n  \"mean_prefix\": 0.0,\n  \"max_prefix\": 0,\n  \"prefix_reread_cost\": 0\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/empty.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/empty.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "error": {
+    "code": "TL_E_NO_REQUESTS",
+    "hint": "The log has no records; check the file and the --format value."
+   }
+  },
+  {
+   "args": [
+    "report",
+    "logs/missing_field.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/missing_field.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "error": {
+    "code": "TL_E_MISSING_FIELD",
+    "hint": "Native logs need turn, step and input_tokens per line; for provider logs pass --format anthropic or openai."
+   }
+  },
+  {
+   "args": [
+    "report",
+    "logs/anthropic.jsonl",
+    "--format",
+    "anthropic"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 4\nturns:            1\nsteps per turn:   {1: 4}\n\ntotal input tokens:  89,332\ntotal output tokens: 505\n\ncache-read:               66,816 (74.8% of input)\npriming re-sent:          0 (0.0% of input)\nre-carried conversation:  0 (0.0% of input)\n\nmean prefix / request: 22,333    max prefix: 24,000\nprefix re-read cost:   66,816 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/anthropic.jsonl",
+    "--format",
+    "anthropic",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 4,\n  \"n_turns\": 1,\n  \"steps_per_turn\": {\n    \"1\": 4\n  },\n  \"total_input\": 89332,\n  \"total_output\": 505,\n  \"total_cache_read\": 66816,\n  \"cache_read_pct\": 0.7479514619621188,\n  \"priming_total\": 0,\n  \"priming_pct\": 0.0,\n  \"conversation_total\": 0,\n  \"conversation_pct\": 0.0,\n  \"mean_prefix\": 22333.0,\n  \"max_prefix\": 24000,\n  \"prefix_reread_cost\": 66816\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/anthropic.jsonl",
+    "--format",
+    "anthropic",
+    "--turn-key",
+    "turn",
+    "--step-key",
+    "step"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 4\nturns:            2\nsteps per turn:   {1: 3, 2: 1}\n\ntotal input tokens:  89,332\ntotal output tokens: 505\n\ncache-read:               66,816 (74.8% of input)\npriming re-sent:          0 (0.0% of input)\nre-carried conversation:  0 (0.0% of input)\n\nmean prefix / request: 22,333    max prefix: 24,000\nprefix re-read cost:   66,816 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/anthropic.jsonl",
+    "--format",
+    "anthropic",
+    "--turn-key",
+    "turn",
+    "--step-key",
+    "step",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 4,\n  \"n_turns\": 2,\n  \"steps_per_turn\": {\n    \"1\": 3,\n    \"2\": 1\n  },\n  \"total_input\": 89332,\n  \"total_output\": 505,\n  \"total_cache_read\": 66816,\n  \"cache_read_pct\": 0.7479514619621188,\n  \"priming_total\": 0,\n  \"priming_pct\": 0.0,\n  \"conversation_total\": 0,\n  \"conversation_pct\": 0.0,\n  \"mean_prefix\": 22333.0,\n  \"max_prefix\": 24000,\n  \"prefix_reread_cost\": 66816\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/openai.jsonl",
+    "--format",
+    "openai"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 4\nturns:            1\nsteps per turn:   {1: 4}\n\ntotal input tokens:  89,532\ntotal output tokens: 505\n\ncache-read:               88,432 (98.8% of input)\npriming re-sent:          0 (0.0% of input)\nre-carried conversation:  0 (0.0% of input)\n\nmean prefix / request: 22,383    max prefix: 24,000\nprefix re-read cost:   88,432 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/openai.jsonl",
+    "--format",
+    "openai",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 4,\n  \"n_turns\": 1,\n  \"steps_per_turn\": {\n    \"1\": 4\n  },\n  \"total_input\": 89532,\n  \"total_output\": 505,\n  \"total_cache_read\": 88432,\n  \"cache_read_pct\": 0.987713890005808,\n  \"priming_total\": 0,\n  \"priming_pct\": 0.0,\n  \"conversation_total\": 0,\n  \"conversation_pct\": 0.0,\n  \"mean_prefix\": 22383.0,\n  \"max_prefix\": 24000,\n  \"prefix_reread_cost\": 88432\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/openai.jsonl",
+    "--format",
+    "openai",
+    "--turn-key",
+    "turn",
+    "--step-key",
+    "step"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 4\nturns:            2\nsteps per turn:   {1: 3, 2: 1}\n\ntotal input tokens:  89,532\ntotal output tokens: 505\n\ncache-read:               88,432 (98.8% of input)\npriming re-sent:          0 (0.0% of input)\nre-carried conversation:  0 (0.0% of input)\n\nmean prefix / request: 22,383    max prefix: 24,000\nprefix re-read cost:   88,432 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/openai.jsonl",
+    "--format",
+    "openai",
+    "--turn-key",
+    "turn",
+    "--step-key",
+    "step",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 4,\n  \"n_turns\": 2,\n  \"steps_per_turn\": {\n    \"1\": 3,\n    \"2\": 1\n  },\n  \"total_input\": 89532,\n  \"total_output\": 505,\n  \"total_cache_read\": 88432,\n  \"cache_read_pct\": 0.987713890005808,\n  \"priming_total\": 0,\n  \"priming_pct\": 0.0,\n  \"conversation_total\": 0,\n  \"conversation_pct\": 0.0,\n  \"mean_prefix\": 22383.0,\n  \"max_prefix\": 24000,\n  \"prefix_reread_cost\": 88432\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/anthropic_nested.jsonl",
+    "--format",
+    "anthropic",
+    "--usage-key",
+    "meta",
+    "--turn-key",
+    "t",
+    "--step-key",
+    "s"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 3\nturns:            2\nsteps per turn:   {1: 2, 2: 1}\n\ntotal input tokens:  1,177\ntotal output tokens: 15\n\ncache-read:               1,000 (85.0% of input)\npriming re-sent:          0 (0.0% of input)\nre-carried conversation:  0 (0.0% of input)\n\nmean prefix / request: 392    max prefix: 1,150\nprefix re-read cost:   1,000 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/anthropic_nested.jsonl",
+    "--format",
+    "anthropic",
+    "--usage-key",
+    "meta",
+    "--turn-key",
+    "t",
+    "--step-key",
+    "s",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 3,\n  \"n_turns\": 2,\n  \"steps_per_turn\": {\n    \"1\": 2,\n    \"2\": 1\n  },\n  \"total_input\": 1177,\n  \"total_output\": 15,\n  \"total_cache_read\": 1000,\n  \"cache_read_pct\": 0.8496176720475785,\n  \"priming_total\": 0,\n  \"priming_pct\": 0.0,\n  \"conversation_total\": 0,\n  \"conversation_pct\": 0.0,\n  \"mean_prefix\": 392.3333333333333,\n  \"max_prefix\": 1150,\n  \"prefix_reread_cost\": 1000\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/openai_nested.jsonl",
+    "--format",
+    "openai"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 3\nturns:            1\nsteps per turn:   {1: 3}\n\ntotal input tokens:  4,500\ntotal output tokens: 90\n\ncache-read:               2,700 (60.0% of input)\npriming re-sent:          0 (0.0% of input)\nre-carried conversation:  0 (0.0% of input)\n\nmean prefix / request: 1,500    max prefix: 2,000\nprefix re-read cost:   2,700 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/openai_nested.jsonl",
+    "--format",
+    "openai",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 3,\n  \"n_turns\": 1,\n  \"steps_per_turn\": {\n    \"1\": 3\n  },\n  \"total_input\": 4500,\n  \"total_output\": 90,\n  \"total_cache_read\": 2700,\n  \"cache_read_pct\": 0.6,\n  \"priming_total\": 0,\n  \"priming_pct\": 0.0,\n  \"conversation_total\": 0,\n  \"conversation_pct\": 0.0,\n  \"mean_prefix\": 1500.0,\n  \"max_prefix\": 2000,\n  \"prefix_reread_cost\": 2700\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/bad_int.jsonl",
+    "--format",
+    "openai"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--format",
+    "bogus"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [],
+   "exit_code": 1,
+   "stdout": "usage: tokenledger [-h] {report,what-if,describe,mcp} ...\n\nMeasure the cost structure of multi-agent LLM systems from request logs.\n\npositional arguments:\n  {report,what-if,describe,mcp}\n    report              print a cost-structure report for a JSONL log\n    what-if             input tokens saved by removing one (turn, step)\n    describe            print tool definitions (Anthropic, OpenAI, MCP) as\n                        JSON\n    mcp                 run an MCP server on stdio exposing the tools\n\noptions:\n  -h, --help            show this help message and exit\n"
+  }
+ ],
+ "api": [
+  {
+   "kind": "what_if",
+   "log": "logs/sample.jsonl",
+   "cases": [
+    {
+     "turn": 1,
+     "step": 0,
+     "ok": 22216
+    },
+    {
+     "turn": 1,
+     "step": 1,
+     "ok": 22916
+    },
+    {
+     "turn": 1,
+     "step": 2,
+     "ok": 23200
+    },
+    {
+     "turn": 2,
+     "step": 0,
+     "ok": 24000
+    },
+    {
+     "turn": 99,
+     "step": 0,
+     "error": true
+    }
+   ]
+  },
+  {
+   "kind": "what_if",
+   "log": "logs/tie_rounding.jsonl",
+   "cases": [
+    {
+     "turn": 2,
+     "step": 1,
+     "ok": 1000001
+    },
+    {
+     "turn": 1,
+     "step": 0,
+     "ok": 2
+    },
+    {
+     "turn": 1,
+     "step": 1,
+     "ok": 2
+    },
+    {
+     "turn": 10,
+     "step": 0,
+     "ok": 1
+    },
+    {
+     "turn": 99,
+     "step": 0,
+     "error": true
+    }
+   ]
+  },
+  {
+   "kind": "what_if",
+   "log": "logs/big_ints.jsonl",
+   "cases": [
+    {
+     "turn": 1,
+     "step": 0,
+     "ok": 18014398509481986
+    },
+    {
+     "turn": 1,
+     "step": 1,
+     "ok": 9007199254740999
+    },
+    {
+     "turn": 18446744073709551616,
+     "step": 0,
+     "ok": 123456789012345678901234567890
+    },
+    {
+     "turn": 99,
+     "step": 0,
+     "error": true
+    }
+   ]
+  },
+  {
+   "kind": "load_requests",
+   "log": "logs/sample.jsonl",
+   "mapping": null,
+   "requests": [
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 20616,
+     "cache_read_tokens": 20116,
+     "priming_tokens": 20116,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 800,
+     "output_tokens": 120,
+     "label": "plan"
+    },
+    {
+     "turn": 1,
+     "step": 1,
+     "input_tokens": 21716,
+     "cache_read_tokens": 21516,
+     "priming_tokens": 20116,
+     "conversation_tokens": 1400,
+     "tool_result_tokens": 1200,
+     "output_tokens": 95,
+     "label": "read file"
+    },
+    {
+     "turn": 1,
+     "step": 2,
+     "input_tokens": 23200,
+     "cache_read_tokens": 23000,
+     "priming_tokens": 20116,
+     "conversation_tokens": 2884,
+     "tool_result_tokens": 300,
+     "output_tokens": 210,
+     "label": "edit"
+    },
+    {
+     "turn": 2,
+     "step": 0,
+     "input_tokens": 24000,
+     "cache_read_tokens": 23800,
+     "priming_tokens": 20116,
+     "conversation_tokens": 3684,
+     "tool_result_tokens": 150,
+     "output_tokens": 80,
+     "label": "verify"
+    }
+   ],
+   "metrics": {
+    "n_requests": 4,
+    "n_turns": 2,
+    "steps_per_turn": {
+     "1": 3,
+     "2": 1
+    },
+    "total_input": 89532,
+    "total_output": 505,
+    "total_cache_read": 88432,
+    "cache_read_pct": 0.987713890005808,
+    "priming_total": 80464,
+    "priming_pct": 0.8987177768842425,
+    "conversation_total": 7968,
+    "conversation_pct": 0.08899611312156547,
+    "mean_prefix": 22383.0,
+    "max_prefix": 24000,
+    "prefix_reread_cost": 88432
+   },
+   "fresh": [
+    500,
+    200,
+    200,
+    200
+   ]
+  },
+  {
+   "kind": "load_requests",
+   "log": "logs/tie_rounding.jsonl",
+   "mapping": null,
+   "requests": [
+    {
+     "turn": 2,
+     "step": 1,
+     "input_tokens": 1000001,
+     "cache_read_tokens": 3,
+     "priming_tokens": 1,
+     "conversation_tokens": 2,
+     "tool_result_tokens": 5,
+     "output_tokens": 7,
+     "label": "b"
+    },
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 2,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 0,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 1,
+     "input_tokens": 2,
+     "cache_read_tokens": 1,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 9,
+     "output_tokens": 0,
+     "label": ""
+    },
+    {
+     "turn": 10,
+     "step": 0,
+     "input_tokens": 1,
+     "cache_read_tokens": 1,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 1,
+     "label": ""
+    }
+   ],
+   "metrics": {
+    "n_requests": 4,
+    "n_turns": 3,
+    "steps_per_turn": {
+     "1": 2,
+     "2": 1,
+     "10": 1
+    },
+    "total_input": 1000006,
+    "total_output": 8,
+    "total_cache_read": 5,
+    "cache_read_pct": 4.999970000179999e-06,
+    "priming_total": 1,
+    "priming_pct": 9.999940000359997e-07,
+    "conversation_total": 2,
+    "conversation_pct": 1.9999880000719995e-06,
+    "mean_prefix": 250001.5,
+    "max_prefix": 1000001,
+    "prefix_reread_cost": 5
+   },
+   "fresh": [
+    999998,
+    2,
+    1,
+    0
+   ]
+  },
+  {
+   "kind": "load_requests",
+   "log": "logs/zero_input.jsonl",
+   "mapping": null,
+   "requests": [
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 0,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 0,
+     "label": ""
+    }
+   ],
+   "metrics": {
+    "n_requests": 1,
+    "n_turns": 1,
+    "steps_per_turn": {
+     "1": 1
+    },
+    "total_input": 0,
+    "total_output": 0,
+    "total_cache_read": 0,
+    "cache_read_pct": 0.0,
+    "priming_total": 0,
+    "priming_pct": 0.0,
+    "conversation_total": 0,
+    "conversation_pct": 0.0,
+    "mean_prefix": 0.0,
+    "max_prefix": 0,
+    "prefix_reread_cost": 0
+   },
+   "fresh": [
+    0
+   ]
+  },
+  {
+   "kind": "load_requests",
+   "log": "logs/bom.jsonl",
+   "mapping": null,
+   "requests": [
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 1000,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 200,
+     "output_tokens": 0,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 1,
+     "input_tokens": 1400,
+     "cache_read_tokens": 1000,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 7,
+     "label": ""
+    },
+    {
+     "turn": 2,
+     "step": 0,
+     "input_tokens": 90,
+     "cache_read_tokens": 0,
+     "priming_tokens": 50,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 0,
+     "label": ""
+    }
+   ],
+   "metrics": {
+    "n_requests": 3,
+    "n_turns": 2,
+    "steps_per_turn": {
+     "1": 2,
+     "2": 1
+    },
+    "total_input": 2490,
+    "total_output": 7,
+    "total_cache_read": 1000,
+    "cache_read_pct": 0.40160642570281124,
+    "priming_total": 50,
+    "priming_pct": 0.020080321285140562,
+    "conversation_total": 0,
+    "conversation_pct": 0.0,
+    "mean_prefix": 830.0,
+    "max_prefix": 1400,
+    "prefix_reread_cost": 1000
+   },
+   "fresh": [
+    1000,
+    400,
+    90
+   ]
+  },
+  {
+   "kind": "load_requests",
+   "log": "logs/crlf.jsonl",
+   "mapping": null,
+   "requests": [
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 1000,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 200,
+     "output_tokens": 0,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 1,
+     "input_tokens": 1400,
+     "cache_read_tokens": 1000,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 7,
+     "label": ""
+    },
+    {
+     "turn": 2,
+     "step": 0,
+     "input_tokens": 90,
+     "cache_read_tokens": 0,
+     "priming_tokens": 50,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 0,
+     "label": ""
+    }
+   ],
+   "metrics": {
+    "n_requests": 3,
+    "n_turns": 2,
+    "steps_per_turn": {
+     "1": 2,
+     "2": 1
+    },
+    "total_input": 2490,
+    "total_output": 7,
+    "total_cache_read": 1000,
+    "cache_read_pct": 0.40160642570281124,
+    "priming_total": 50,
+    "priming_pct": 0.020080321285140562,
+    "conversation_total": 0,
+    "conversation_pct": 0.0,
+    "mean_prefix": 830.0,
+    "max_prefix": 1400,
+    "prefix_reread_cost": 1000
+   },
+   "fresh": [
+    1000,
+    400,
+    90
+   ]
+  },
+  {
+   "kind": "load_requests",
+   "log": "logs/cr_only.jsonl",
+   "mapping": null,
+   "requests": [
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 1000,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 200,
+     "output_tokens": 0,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 1,
+     "input_tokens": 1400,
+     "cache_read_tokens": 1000,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 7,
+     "label": ""
+    },
+    {
+     "turn": 2,
+     "step": 0,
+     "input_tokens": 90,
+     "cache_read_tokens": 0,
+     "priming_tokens": 50,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 0,
+     "label": ""
+    }
+   ],
+   "metrics": {
+    "n_requests": 3,
+    "n_turns": 2,
+    "steps_per_turn": {
+     "1": 2,
+     "2": 1
+    },
+    "total_input": 2490,
+    "total_output": 7,
+    "total_cache_read": 1000,
+    "cache_read_pct": 0.40160642570281124,
+    "priming_total": 50,
+    "priming_pct": 0.020080321285140562,
+    "conversation_total": 0,
+    "conversation_pct": 0.0,
+    "mean_prefix": 830.0,
+    "max_prefix": 1400,
+    "prefix_reread_cost": 1000
+   },
+   "fresh": [
+    1000,
+    400,
+    90
+   ]
+  },
+  {
+   "kind": "load_requests",
+   "log": "logs/mixed_eol.jsonl",
+   "mapping": null,
+   "requests": [
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 1000,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 200,
+     "output_tokens": 0,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 1,
+     "input_tokens": 1400,
+     "cache_read_tokens": 1000,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 7,
+     "label": ""
+    },
+    {
+     "turn": 2,
+     "step": 0,
+     "input_tokens": 90,
+     "cache_read_tokens": 0,
+     "priming_tokens": 50,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 0,
+     "label": ""
+    }
+   ],
+   "metrics": {
+    "n_requests": 3,
+    "n_turns": 2,
+    "steps_per_turn": {
+     "1": 2,
+     "2": 1
+    },
+    "total_input": 2490,
+    "total_output": 7,
+    "total_cache_read": 1000,
+    "cache_read_pct": 0.40160642570281124,
+    "priming_total": 50,
+    "priming_pct": 0.020080321285140562,
+    "conversation_total": 0,
+    "conversation_pct": 0.0,
+    "mean_prefix": 830.0,
+    "max_prefix": 1400,
+    "prefix_reread_cost": 1000
+   },
+   "fresh": [
+    1000,
+    400,
+    90
+   ]
+  },
+  {
+   "kind": "load_requests",
+   "log": "logs/unicode_ws.jsonl",
+   "mapping": null,
+   "requests": [
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 1000,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 200,
+     "output_tokens": 0,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 1,
+     "input_tokens": 1400,
+     "cache_read_tokens": 1000,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 7,
+     "label": ""
+    },
+    {
+     "turn": 2,
+     "step": 0,
+     "input_tokens": 90,
+     "cache_read_tokens": 0,
+     "priming_tokens": 50,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 0,
+     "label": ""
+    }
+   ],
+   "metrics": {
+    "n_requests": 3,
+    "n_turns": 2,
+    "steps_per_turn": {
+     "1": 2,
+     "2": 1
+    },
+    "total_input": 2490,
+    "total_output": 7,
+    "total_cache_read": 1000,
+    "cache_read_pct": 0.40160642570281124,
+    "priming_total": 50,
+    "priming_pct": 0.020080321285140562,
+    "conversation_total": 0,
+    "conversation_pct": 0.0,
+    "mean_prefix": 830.0,
+    "max_prefix": 1400,
+    "prefix_reread_cost": 1000
+   },
+   "fresh": [
+    1000,
+    400,
+    90
+   ]
+  },
+  {
+   "kind": "load_requests",
+   "log": "logs/bom_crlf_comments.jsonl",
+   "mapping": null,
+   "requests": [
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 1000,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 200,
+     "output_tokens": 0,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 1,
+     "input_tokens": 1400,
+     "cache_read_tokens": 1000,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 7,
+     "label": ""
+    }
+   ],
+   "metrics": {
+    "n_requests": 2,
+    "n_turns": 1,
+    "steps_per_turn": {
+     "1": 2
+    },
+    "total_input": 2400,
+    "total_output": 7,
+    "total_cache_read": 1000,
+    "cache_read_pct": 0.4166666666666667,
+    "priming_total": 0,
+    "priming_pct": 0.0,
+    "conversation_total": 0,
+    "conversation_pct": 0.0,
+    "mean_prefix": 1200.0,
+    "max_prefix": 1400,
+    "prefix_reread_cost": 1000
+   },
+   "fresh": [
+    1000,
+    400
+   ]
+  },
+  {
+   "kind": "load_requests",
+   "log": "logs/big_ints.jsonl",
+   "mapping": null,
+   "requests": [
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 9007199254740993,
+     "cache_read_tokens": 9007199254740991,
+     "priming_tokens": 9007199254740992,
+     "conversation_tokens": 1,
+     "tool_result_tokens": 9007199254740993,
+     "output_tokens": 9007199254740995,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 1,
+     "input_tokens": 9007199254740999,
+     "cache_read_tokens": 9007199254740993,
+     "priming_tokens": 9007199254740993,
+     "conversation_tokens": 3,
+     "tool_result_tokens": 5,
+     "output_tokens": 9007199254740997,
+     "label": ""
+    },
+    {
+     "turn": 18446744073709551616,
+     "step": 0,
+     "input_tokens": 123456789012345678901234567890,
+     "cache_read_tokens": 100000000000000000000000000001,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 1,
+     "label": ""
+    }
+   ],
+   "metrics": {
+    "n_requests": 3,
+    "n_turns": 2,
+    "steps_per_turn": {
+     "1": 2,
+     "18446744073709551616": 1
+    },
+    "total_input": 123456789012363693299744049882,
+    "total_output": 18014398509481993,
+    "total_cache_read": 100000000000018014398509481985,
+    "cache_read_pct": 0.8100000072900277,
+    "priming_total": 18014398509481985,
+    "priming_pct": 1.4591662924003244e-13,
+    "conversation_total": 4,
+    "conversation_pct": 3.2400000291595275e-29,
+    "mean_prefix": 4.115226300412123e+28,
+    "max_prefix": 123456789012345678901234567890,
+    "prefix_reread_cost": 100000000000018014398509481985
+   },
+   "fresh": [
+    2,
+    6,
+    23456789012345678901234567889
+   ]
+  },
+  {
+   "kind": "load_requests",
+   "log": "logs/huge_mean.jsonl",
+   "mapping": null,
+   "requests": [
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 10000000000000000000000,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 0,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 1,
+     "input_tokens": 10000000000000000000000,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 0,
+     "label": ""
+    }
+   ],
+   "metrics": {
+    "n_requests": 2,
+    "n_turns": 1,
+    "steps_per_turn": {
+     "1": 2
+    },
+    "total_input": 20000000000000000000000,
+    "total_output": 0,
+    "total_cache_read": 0,
+    "cache_read_pct": 0.0,
+    "priming_total": 0,
+    "priming_pct": 0.0,
+    "conversation_total": 0,
+    "conversation_pct": 0.0,
+    "mean_prefix": 1e+22,
+    "max_prefix": 10000000000000000000000,
+    "prefix_reread_cost": 0
+   },
+   "fresh": [
+    10000000000000000000000,
+    10000000000000000000000
+   ]
+  },
+  {
+   "kind": "load_requests",
+   "log": "logs/neg_zero.jsonl",
+   "mapping": null,
+   "requests": [
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 1000,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 200,
+     "output_tokens": 0,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 5,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 0,
+     "label": ""
+    }
+   ],
+   "metrics": {
+    "n_requests": 2,
+    "n_turns": 1,
+    "steps_per_turn": {
+     "1": 2
+    },
+    "total_input": 1005,
+    "total_output": 0,
+    "total_cache_read": 0,
+    "cache_read_pct": 0.0,
+    "priming_total": 0,
+    "priming_pct": 0.0,
+    "conversation_total": 0,
+    "conversation_pct": 0.0,
+    "mean_prefix": 502.5,
+    "max_prefix": 1000,
+    "prefix_reread_cost": 0
+   },
+   "fresh": [
+    1000,
+    5
+   ]
+  },
+  {
+   "kind": "load_requests",
+   "log": "logs/duplicate_keys.jsonl",
+   "mapping": null,
+   "requests": [
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 9,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 0,
+     "label": ""
+    }
+   ],
+   "metrics": {
+    "n_requests": 1,
+    "n_turns": 1,
+    "steps_per_turn": {
+     "1": 1
+    },
+    "total_input": 9,
+    "total_output": 0,
+    "total_cache_read": 0,
+    "cache_read_pct": 0.0,
+    "priming_total": 0,
+    "priming_pct": 0.0,
+    "conversation_total": 0,
+    "conversation_pct": 0.0,
+    "mean_prefix": 9.0,
+    "max_prefix": 9,
+    "prefix_reread_cost": 0
+   },
+   "fresh": [
+    9
+   ]
+  },
+  {
+   "kind": "load_requests",
+   "log": "logs/unicode_label.jsonl",
+   "mapping": null,
+   "requests": [
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 5,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 0,
+     "label": "café 😀"
+    }
+   ],
+   "metrics": {
+    "n_requests": 1,
+    "n_turns": 1,
+    "steps_per_turn": {
+     "1": 1
+    },
+    "total_input": 5,
+    "total_output": 0,
+    "total_cache_read": 0,
+    "cache_read_pct": 0.0,
+    "priming_total": 0,
+    "priming_pct": 0.0,
+    "conversation_total": 0,
+    "conversation_pct": 0.0,
+    "mean_prefix": 5.0,
+    "max_prefix": 5,
+    "prefix_reread_cost": 0
+   },
+   "fresh": [
+    5
+   ]
+  },
+  {
+   "kind": "load_requests",
+   "log": "logs/extra_float_field.jsonl",
+   "mapping": null,
+   "requests": [
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 1000,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 200,
+     "output_tokens": 0,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 1,
+     "input_tokens": 1,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 0,
+     "label": ""
+    }
+   ],
+   "metrics": {
+    "n_requests": 2,
+    "n_turns": 1,
+    "steps_per_turn": {
+     "1": 2
+    },
+    "total_input": 1001,
+    "total_output": 0,
+    "total_cache_read": 0,
+    "cache_read_pct": 0.0,
+    "priming_total": 0,
+    "priming_pct": 0.0,
+    "conversation_total": 0,
+    "conversation_pct": 0.0,
+    "mean_prefix": 500.5,
+    "max_prefix": 1000,
+    "prefix_reread_cost": 0
+   },
+   "fresh": [
+    1000,
+    1
+   ]
+  },
+  {
+   "kind": "load_requests",
+   "log": "logs/nesting_ok.jsonl",
+   "mapping": null,
+   "requests": [
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 5,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 0,
+     "label": ""
+    }
+   ],
+   "metrics": {
+    "n_requests": 1,
+    "n_turns": 1,
+    "steps_per_turn": {
+     "1": 1
+    },
+    "total_input": 5,
+    "total_output": 0,
+    "total_cache_read": 0,
+    "cache_read_pct": 0.0,
+    "priming_total": 0,
+    "priming_pct": 0.0,
+    "conversation_total": 0,
+    "conversation_pct": 0.0,
+    "mean_prefix": 5.0,
+    "max_prefix": 5,
+    "prefix_reread_cost": 0
+   },
+   "fresh": [
+    5
+   ]
+  },
+  {
+   "kind": "load_requests",
+   "log": "logs/mapped.jsonl",
+   "mapping": {
+    "turn": "iteration",
+    "step": "idx",
+    "input_tokens": "prompt_tok",
+    "cache_read_tokens": "cached"
+   },
+   "requests": [
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 500,
+     "cache_read_tokens": 400,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 0,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 1,
+     "input_tokens": 700,
+     "cache_read_tokens": 600,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 0,
+     "label": ""
+    },
+    {
+     "turn": 2,
+     "step": 0,
+     "input_tokens": 300,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 0,
+     "label": ""
+    }
+   ],
+   "metrics": {
+    "n_requests": 3,
+    "n_turns": 2,
+    "steps_per_turn": {
+     "1": 2,
+     "2": 1
+    },
+    "total_input": 1500,
+    "total_output": 0,
+    "total_cache_read": 1000,
+    "cache_read_pct": 0.6666666666666666,
+    "priming_total": 0,
+    "priming_pct": 0.0,
+    "conversation_total": 0,
+    "conversation_pct": 0.0,
+    "mean_prefix": 500.0,
+    "max_prefix": 700,
+    "prefix_reread_cost": 1000
+   },
+   "fresh": [
+    100,
+    100,
+    300
+   ]
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/missing_field.jsonl"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/float_tokens.jsonl",
+   "code": "TL_E_BAD_VALUE"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/float_integral.jsonl",
+   "code": "TL_E_BAD_VALUE"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/exp_tokens.jsonl",
+   "code": "TL_E_BAD_VALUE"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/bool_tokens.jsonl",
+   "code": "TL_E_BAD_VALUE"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/str_tokens.jsonl",
+   "code": "TL_E_BAD_VALUE"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/neg_tokens.jsonl",
+   "code": "TL_E_BAD_VALUE"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/list_tokens.jsonl",
+   "code": "TL_E_BAD_VALUE"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/float_optional.jsonl",
+   "code": "TL_E_BAD_VALUE"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/float_turn.jsonl",
+   "code": "TL_E_BAD_VALUE"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/bool_turn.jsonl",
+   "code": "TL_E_BAD_VALUE"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/str_output.jsonl",
+   "code": "TL_E_BAD_VALUE"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/numeric_label.jsonl",
+   "code": "TL_E_BAD_VALUE"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/null_input.jsonl",
+   "code": "TL_E_MISSING_FIELD"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/nan_literal.jsonl",
+   "code": "TL_E_BAD_JSON"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/infinity_literal.jsonl",
+   "code": "TL_E_BAD_JSON"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/neg_infinity_literal.jsonl",
+   "code": "TL_E_BAD_JSON"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/nan_extra_field.jsonl",
+   "code": "TL_E_BAD_JSON"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/leading_zero.jsonl",
+   "code": "TL_E_BAD_JSON"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/plus_sign.jsonl",
+   "code": "TL_E_BAD_JSON"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/trailing_garbage.jsonl",
+   "code": "TL_E_BAD_JSON"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/non_object_list.jsonl",
+   "code": "TL_E_BAD_JSON"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/non_object_scalar.jsonl",
+   "code": "TL_E_BAD_JSON"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/deep_nesting.jsonl",
+   "code": "TL_E_BAD_JSON"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/bom_twice.jsonl",
+   "code": "TL_E_BAD_JSON"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/bom_mid_file.jsonl",
+   "code": "TL_E_BAD_JSON"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/invalid_utf8.jsonl",
+   "code": "TL_E_BAD_ENCODING"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/invalid_utf8_comment.jsonl",
+   "code": "TL_E_BAD_ENCODING"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/latin1.jsonl",
+   "code": "TL_E_BAD_ENCODING"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/utf16.jsonl",
+   "code": "TL_E_BAD_ENCODING"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/overlong_utf8.jsonl",
+   "code": "TL_E_BAD_ENCODING"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/surrogate_utf8.jsonl",
+   "code": "TL_E_BAD_ENCODING"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/huge_digits.jsonl",
+   "code": "TL_E_BAD_VALUE"
+  },
+  {
+   "kind": "load_requests_error",
+   "log": "logs/control_char_string.jsonl",
+   "code": "TL_E_BAD_JSON"
+  },
+  {
+   "kind": "account_empty_error"
+  },
+  {
+   "kind": "load_provider",
+   "log": "logs/anthropic.jsonl",
+   "fmt": "anthropic",
+   "opts": {
+    "turn_key": "turn",
+    "step_key": "step"
+   },
+   "requests": [
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 20616,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 120,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 1,
+     "input_tokens": 21516,
+     "cache_read_tokens": 20116,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 95,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 2,
+     "input_tokens": 23200,
+     "cache_read_tokens": 22900,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 210,
+     "label": ""
+    },
+    {
+     "turn": 2,
+     "step": 0,
+     "input_tokens": 24000,
+     "cache_read_tokens": 23800,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 80,
+     "label": ""
+    }
+   ],
+   "metrics": {
+    "n_requests": 4,
+    "n_turns": 2,
+    "steps_per_turn": {
+     "1": 3,
+     "2": 1
+    },
+    "total_input": 89332,
+    "total_output": 505,
+    "total_cache_read": 66816,
+    "cache_read_pct": 0.7479514619621188,
+    "priming_total": 0,
+    "priming_pct": 0.0,
+    "conversation_total": 0,
+    "conversation_pct": 0.0,
+    "mean_prefix": 22333.0,
+    "max_prefix": 24000,
+    "prefix_reread_cost": 66816
+   }
+  },
+  {
+   "kind": "load_provider",
+   "log": "logs/anthropic.jsonl",
+   "fmt": "anthropic",
+   "opts": {},
+   "requests": [
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 20616,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 120,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 1,
+     "input_tokens": 21516,
+     "cache_read_tokens": 20116,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 95,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 2,
+     "input_tokens": 23200,
+     "cache_read_tokens": 22900,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 210,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 3,
+     "input_tokens": 24000,
+     "cache_read_tokens": 23800,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 80,
+     "label": ""
+    }
+   ],
+   "metrics": {
+    "n_requests": 4,
+    "n_turns": 1,
+    "steps_per_turn": {
+     "1": 4
+    },
+    "total_input": 89332,
+    "total_output": 505,
+    "total_cache_read": 66816,
+    "cache_read_pct": 0.7479514619621188,
+    "priming_total": 0,
+    "priming_pct": 0.0,
+    "conversation_total": 0,
+    "conversation_pct": 0.0,
+    "mean_prefix": 22333.0,
+    "max_prefix": 24000,
+    "prefix_reread_cost": 66816
+   }
+  },
+  {
+   "kind": "load_provider",
+   "log": "logs/openai.jsonl",
+   "fmt": "openai",
+   "opts": {
+    "turn_key": "turn",
+    "step_key": "step"
+   },
+   "requests": [
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 20616,
+     "cache_read_tokens": 20116,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 120,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 1,
+     "input_tokens": 21716,
+     "cache_read_tokens": 21516,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 95,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 2,
+     "input_tokens": 23200,
+     "cache_read_tokens": 23000,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 210,
+     "label": ""
+    },
+    {
+     "turn": 2,
+     "step": 0,
+     "input_tokens": 24000,
+     "cache_read_tokens": 23800,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 80,
+     "label": ""
+    }
+   ],
+   "metrics": {
+    "n_requests": 4,
+    "n_turns": 2,
+    "steps_per_turn": {
+     "1": 3,
+     "2": 1
+    },
+    "total_input": 89532,
+    "total_output": 505,
+    "total_cache_read": 88432,
+    "cache_read_pct": 0.987713890005808,
+    "priming_total": 0,
+    "priming_pct": 0.0,
+    "conversation_total": 0,
+    "conversation_pct": 0.0,
+    "mean_prefix": 22383.0,
+    "max_prefix": 24000,
+    "prefix_reread_cost": 88432
+   }
+  },
+  {
+   "kind": "load_provider",
+   "log": "logs/openai.jsonl",
+   "fmt": "openai",
+   "opts": {},
+   "requests": [
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 20616,
+     "cache_read_tokens": 20116,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 120,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 1,
+     "input_tokens": 21716,
+     "cache_read_tokens": 21516,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 95,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 2,
+     "input_tokens": 23200,
+     "cache_read_tokens": 23000,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 210,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 3,
+     "input_tokens": 24000,
+     "cache_read_tokens": 23800,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 80,
+     "label": ""
+    }
+   ],
+   "metrics": {
+    "n_requests": 4,
+    "n_turns": 1,
+    "steps_per_turn": {
+     "1": 4
+    },
+    "total_input": 89532,
+    "total_output": 505,
+    "total_cache_read": 88432,
+    "cache_read_pct": 0.987713890005808,
+    "priming_total": 0,
+    "priming_pct": 0.0,
+    "conversation_total": 0,
+    "conversation_pct": 0.0,
+    "mean_prefix": 22383.0,
+    "max_prefix": 24000,
+    "prefix_reread_cost": 88432
+   }
+  },
+  {
+   "kind": "load_provider",
+   "log": "logs/anthropic_nested.jsonl",
+   "fmt": "anthropic",
+   "opts": {
+    "turn_key": "t",
+    "step_key": "s",
+    "usage_key": "meta"
+   },
+   "requests": [
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 1150,
+     "cache_read_tokens": 1000,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 10,
+     "label": "plan"
+    },
+    {
+     "turn": 1,
+     "step": 1,
+     "input_tokens": 20,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 5,
+     "label": ""
+    },
+    {
+     "turn": 2,
+     "step": 0,
+     "input_tokens": 7,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 0,
+     "label": ""
+    }
+   ],
+   "metrics": {
+    "n_requests": 3,
+    "n_turns": 2,
+    "steps_per_turn": {
+     "1": 2,
+     "2": 1
+    },
+    "total_input": 1177,
+    "total_output": 15,
+    "total_cache_read": 1000,
+    "cache_read_pct": 0.8496176720475785,
+    "priming_total": 0,
+    "priming_pct": 0.0,
+    "conversation_total": 0,
+    "conversation_pct": 0.0,
+    "mean_prefix": 392.3333333333333,
+    "max_prefix": 1150,
+    "prefix_reread_cost": 1000
+   }
+  },
+  {
+   "kind": "load_provider",
+   "log": "logs/openai_nested.jsonl",
+   "fmt": "openai",
+   "opts": {},
+   "requests": [
+    {
+     "turn": 1,
+     "step": 0,
+     "input_tokens": 1000,
+     "cache_read_tokens": 800,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 20,
+     "label": "a"
+    },
+    {
+     "turn": 1,
+     "step": 1,
+     "input_tokens": 1500,
+     "cache_read_tokens": 0,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 30,
+     "label": ""
+    },
+    {
+     "turn": 1,
+     "step": 2,
+     "input_tokens": 2000,
+     "cache_read_tokens": 1900,
+     "priming_tokens": 0,
+     "conversation_tokens": 0,
+     "tool_result_tokens": 0,
+     "output_tokens": 40,
+     "label": ""
+    }
+   ],
+   "metrics": {
+    "n_requests": 3,
+    "n_turns": 1,
+    "steps_per_turn": {
+     "1": 3
+    },
+    "total_input": 4500,
+    "total_output": 90,
+    "total_cache_read": 2700,
+    "cache_read_pct": 0.6,
+    "priming_total": 0,
+    "priming_pct": 0.0,
+    "conversation_total": 0,
+    "conversation_pct": 0.0,
+    "mean_prefix": 1500.0,
+    "max_prefix": 2000,
+    "prefix_reread_cost": 2700
+   }
+  },
+  {
+   "kind": "load_provider_error",
+   "log": "logs/bad_int.jsonl",
+   "fmt": "openai",
+   "opts": {}
+  },
+  {
+   "kind": "unknown_format_error",
+   "fmt": "cohere"
+  }
+ ],
+ "robustness": [
+  {
+   "args": [
+    "report",
+    "logs/anthropic_big.jsonl",
+    "--format",
+    "anthropic"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 1\nturns:            1\nsteps per turn:   {1: 1}\n\ntotal input tokens:  27,021,597,764,222,979\ntotal output tokens: 1\n\ncache-read:               9,007,199,254,740,993 (33.3% of input)\npriming re-sent:          0 (0.0% of input)\nre-carried conversation:  0 (0.0% of input)\n\nmean prefix / request: 27,021,597,764,222,980    max prefix: 27,021,597,764,222,979\nprefix re-read cost:   9,007,199,254,740,993 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/anthropic_big.jsonl",
+    "--format",
+    "anthropic",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 1,\n  \"n_turns\": 1,\n  \"steps_per_turn\": {\n    \"1\": 1\n  },\n  \"total_input\": 27021597764222979,\n  \"total_output\": 1,\n  \"total_cache_read\": 9007199254740993,\n  \"cache_read_pct\": 0.3333333333333333,\n  \"priming_total\": 0,\n  \"priming_pct\": 0.0,\n  \"conversation_total\": 0,\n  \"conversation_pct\": 0.0,\n  \"mean_prefix\": 2.702159776422298e+16,\n  \"max_prefix\": 27021597764222979,\n  \"prefix_reread_cost\": 9007199254740993\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/anthropic_big.jsonl",
+    "--format",
+    "anthropic",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "requests=1 turns=1 input=27021597764222979 output=1 cache_read_pct=33.3%\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/big_ints.jsonl"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 3\nturns:            2\nsteps per turn:   {1: 2, 18446744073709551616: 1}\n\ntotal input tokens:  123,456,789,012,363,693,299,744,049,882\ntotal output tokens: 18,014,398,509,481,993\n\ncache-read:               100,000,000,000,018,014,398,509,481,985 (81.0% of input)\npriming re-sent:          18,014,398,509,481,985 (0.0% of input)\nre-carried conversation:  4 (0.0% of input)\n\nmean prefix / request: 41,152,263,004,121,227,826,712,018,944    max prefix: 123,456,789,012,345,678,901,234,567,890\nprefix re-read cost:   100,000,000,000,018,014,398,509,481,985 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/big_ints.jsonl",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 3,\n  \"n_turns\": 2,\n  \"steps_per_turn\": {\n    \"1\": 2,\n    \"18446744073709551616\": 1\n  },\n  \"total_input\": 123456789012363693299744049882,\n  \"total_output\": 18014398509481993,\n  \"total_cache_read\": 100000000000018014398509481985,\n  \"cache_read_pct\": 0.8100000072900277,\n  \"priming_total\": 18014398509481985,\n  \"priming_pct\": 1.4591662924003244e-13,\n  \"conversation_total\": 4,\n  \"conversation_pct\": 3.2400000291595275e-29,\n  \"mean_prefix\": 4.115226300412123e+28,\n  \"max_prefix\": 123456789012345678901234567890,\n  \"prefix_reread_cost\": 100000000000018014398509481985\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/big_ints.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "requests=3 turns=2 input=123456789012363693299744049882 output=18014398509481993 cache_read_pct=81.0%\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/bom.jsonl"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 3\nturns:            2\nsteps per turn:   {1: 2, 2: 1}\n\ntotal input tokens:  2,490\ntotal output tokens: 7\n\ncache-read:               1,000 (40.2% of input)\npriming re-sent:          50 (2.0% of input)\nre-carried conversation:  0 (0.0% of input)\n\nmean prefix / request: 830    max prefix: 1,400\nprefix re-read cost:   1,000 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/bom.jsonl",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 3,\n  \"n_turns\": 2,\n  \"steps_per_turn\": {\n    \"1\": 2,\n    \"2\": 1\n  },\n  \"total_input\": 2490,\n  \"total_output\": 7,\n  \"total_cache_read\": 1000,\n  \"cache_read_pct\": 0.40160642570281124,\n  \"priming_total\": 50,\n  \"priming_pct\": 0.020080321285140562,\n  \"conversation_total\": 0,\n  \"conversation_pct\": 0.0,\n  \"mean_prefix\": 830.0,\n  \"max_prefix\": 1400,\n  \"prefix_reread_cost\": 1000\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/bom.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "requests=3 turns=2 input=2490 output=7 cache_read_pct=40.2%\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/bom_crlf_comments.jsonl"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 2\nturns:            1\nsteps per turn:   {1: 2}\n\ntotal input tokens:  2,400\ntotal output tokens: 7\n\ncache-read:               1,000 (41.7% of input)\npriming re-sent:          0 (0.0% of input)\nre-carried conversation:  0 (0.0% of input)\n\nmean prefix / request: 1,200    max prefix: 1,400\nprefix re-read cost:   1,000 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/bom_crlf_comments.jsonl",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 2,\n  \"n_turns\": 1,\n  \"steps_per_turn\": {\n    \"1\": 2\n  },\n  \"total_input\": 2400,\n  \"total_output\": 7,\n  \"total_cache_read\": 1000,\n  \"cache_read_pct\": 0.4166666666666667,\n  \"priming_total\": 0,\n  \"priming_pct\": 0.0,\n  \"conversation_total\": 0,\n  \"conversation_pct\": 0.0,\n  \"mean_prefix\": 1200.0,\n  \"max_prefix\": 1400,\n  \"prefix_reread_cost\": 1000\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/bom_crlf_comments.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "requests=2 turns=1 input=2400 output=7 cache_read_pct=41.7%\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/bom_mid_file.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/bom_mid_file.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_JSON\",\n    \"message\": \"logs/bom_mid_file.jsonl: line 2: invalid JSON\",\n    \"hint\": \"Each non-blank line must be one JSON object (JSONL); lines starting with # are skipped.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/bom_mid_file.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/bom_twice.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/bom_twice.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_JSON\",\n    \"message\": \"logs/bom_twice.jsonl: line 1: invalid JSON\",\n    \"hint\": \"Each non-blank line must be one JSON object (JSONL); lines starting with # are skipped.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/bom_twice.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/bool_openai.jsonl",
+    "--format",
+    "openai"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/bool_openai.jsonl",
+    "--format",
+    "openai",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_VALUE\",\n    \"message\": \"field 'prompt_tokens' must be a non-negative integer (JSON integer, not float/bool/string), got true\",\n    \"hint\": \"Token counts, turn and step must be non-negative JSON integers (no floats, booleans, strings or NaN/Infinity).\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/bool_openai.jsonl",
+    "--format",
+    "openai",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/bool_tokens.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/bool_tokens.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_VALUE\",\n    \"message\": \"field 'input_tokens' must be a non-negative integer (JSON integer, not float/bool/string), got true\",\n    \"hint\": \"Token counts, turn and step must be non-negative JSON integers (no floats, booleans, strings or NaN/Infinity).\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/bool_tokens.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/bool_turn.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/bool_turn.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_VALUE\",\n    \"message\": \"field 'turn' must be a non-negative integer (JSON integer, not float/bool/string), got true\",\n    \"hint\": \"Token counts, turn and step must be non-negative JSON integers (no floats, booleans, strings or NaN/Infinity).\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/bool_turn.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/control_char_string.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/control_char_string.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_JSON\",\n    \"message\": \"logs/control_char_string.jsonl: line 1: invalid JSON\",\n    \"hint\": \"Each non-blank line must be one JSON object (JSONL); lines starting with # are skipped.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/control_char_string.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/cr_only.jsonl"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 3\nturns:            2\nsteps per turn:   {1: 2, 2: 1}\n\ntotal input tokens:  2,490\ntotal output tokens: 7\n\ncache-read:               1,000 (40.2% of input)\npriming re-sent:          50 (2.0% of input)\nre-carried conversation:  0 (0.0% of input)\n\nmean prefix / request: 830    max prefix: 1,400\nprefix re-read cost:   1,000 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/cr_only.jsonl",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 3,\n  \"n_turns\": 2,\n  \"steps_per_turn\": {\n    \"1\": 2,\n    \"2\": 1\n  },\n  \"total_input\": 2490,\n  \"total_output\": 7,\n  \"total_cache_read\": 1000,\n  \"cache_read_pct\": 0.40160642570281124,\n  \"priming_total\": 50,\n  \"priming_pct\": 0.020080321285140562,\n  \"conversation_total\": 0,\n  \"conversation_pct\": 0.0,\n  \"mean_prefix\": 830.0,\n  \"max_prefix\": 1400,\n  \"prefix_reread_cost\": 1000\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/cr_only.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "requests=3 turns=2 input=2490 output=7 cache_read_pct=40.2%\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/crlf.jsonl"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 3\nturns:            2\nsteps per turn:   {1: 2, 2: 1}\n\ntotal input tokens:  2,490\ntotal output tokens: 7\n\ncache-read:               1,000 (40.2% of input)\npriming re-sent:          50 (2.0% of input)\nre-carried conversation:  0 (0.0% of input)\n\nmean prefix / request: 830    max prefix: 1,400\nprefix re-read cost:   1,000 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/crlf.jsonl",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 3,\n  \"n_turns\": 2,\n  \"steps_per_turn\": {\n    \"1\": 2,\n    \"2\": 1\n  },\n  \"total_input\": 2490,\n  \"total_output\": 7,\n  \"total_cache_read\": 1000,\n  \"cache_read_pct\": 0.40160642570281124,\n  \"priming_total\": 50,\n  \"priming_pct\": 0.020080321285140562,\n  \"conversation_total\": 0,\n  \"conversation_pct\": 0.0,\n  \"mean_prefix\": 830.0,\n  \"max_prefix\": 1400,\n  \"prefix_reread_cost\": 1000\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/crlf.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "requests=3 turns=2 input=2490 output=7 cache_read_pct=40.2%\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/deep_nesting.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/deep_nesting.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_JSON\",\n    \"message\": \"logs/deep_nesting.jsonl: line 1: invalid JSON\",\n    \"hint\": \"Each non-blank line must be one JSON object (JSONL); lines starting with # are skipped.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/deep_nesting.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/duplicate_keys.jsonl"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 1\nturns:            1\nsteps per turn:   {1: 1}\n\ntotal input tokens:  9\ntotal output tokens: 0\n\ncache-read:               0 (0.0% of input)\npriming re-sent:          0 (0.0% of input)\nre-carried conversation:  0 (0.0% of input)\n\nmean prefix / request: 9    max prefix: 9\nprefix re-read cost:   0 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/duplicate_keys.jsonl",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 1,\n  \"n_turns\": 1,\n  \"steps_per_turn\": {\n    \"1\": 1\n  },\n  \"total_input\": 9,\n  \"total_output\": 0,\n  \"total_cache_read\": 0,\n  \"cache_read_pct\": 0.0,\n  \"priming_total\": 0,\n  \"priming_pct\": 0.0,\n  \"conversation_total\": 0,\n  \"conversation_pct\": 0.0,\n  \"mean_prefix\": 9.0,\n  \"max_prefix\": 9,\n  \"prefix_reread_cost\": 0\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/duplicate_keys.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "requests=1 turns=1 input=9 output=0 cache_read_pct=0.0%\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/exp_tokens.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/exp_tokens.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_VALUE\",\n    \"message\": \"field 'input_tokens' must be a non-negative integer (JSON integer, not float/bool/string), got 1000.0\",\n    \"hint\": \"Token counts, turn and step must be non-negative JSON integers (no floats, booleans, strings or NaN/Infinity).\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/exp_tokens.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/extra_float_field.jsonl"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 2\nturns:            1\nsteps per turn:   {1: 2}\n\ntotal input tokens:  1,001\ntotal output tokens: 0\n\ncache-read:               0 (0.0% of input)\npriming re-sent:          0 (0.0% of input)\nre-carried conversation:  0 (0.0% of input)\n\nmean prefix / request: 500    max prefix: 1,000\nprefix re-read cost:   0 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/extra_float_field.jsonl",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 2,\n  \"n_turns\": 1,\n  \"steps_per_turn\": {\n    \"1\": 2\n  },\n  \"total_input\": 1001,\n  \"total_output\": 0,\n  \"total_cache_read\": 0,\n  \"cache_read_pct\": 0.0,\n  \"priming_total\": 0,\n  \"priming_pct\": 0.0,\n  \"conversation_total\": 0,\n  \"conversation_pct\": 0.0,\n  \"mean_prefix\": 500.5,\n  \"max_prefix\": 1000,\n  \"prefix_reread_cost\": 0\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/extra_float_field.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "requests=2 turns=1 input=1001 output=0 cache_read_pct=0.0%\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/float_integral.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/float_integral.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_VALUE\",\n    \"message\": \"field 'input_tokens' must be a non-negative integer (JSON integer, not float/bool/string), got 1.0\",\n    \"hint\": \"Token counts, turn and step must be non-negative JSON integers (no floats, booleans, strings or NaN/Infinity).\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/float_integral.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/float_openai.jsonl",
+    "--format",
+    "openai"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/float_openai.jsonl",
+    "--format",
+    "openai",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_VALUE\",\n    \"message\": \"field 'prompt_tokens' must be a non-negative integer (JSON integer, not float/bool/string), got 12.5\",\n    \"hint\": \"Token counts, turn and step must be non-negative JSON integers (no floats, booleans, strings or NaN/Infinity).\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/float_openai.jsonl",
+    "--format",
+    "openai",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/float_optional.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/float_optional.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_VALUE\",\n    \"message\": \"field 'cache_read_tokens' must be a non-negative integer (JSON integer, not float/bool/string), got 2.5\",\n    \"hint\": \"Token counts, turn and step must be non-negative JSON integers (no floats, booleans, strings or NaN/Infinity).\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/float_optional.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/float_tokens.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/float_tokens.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_VALUE\",\n    \"message\": \"field 'input_tokens' must be a non-negative integer (JSON integer, not float/bool/string), got 1.5\",\n    \"hint\": \"Token counts, turn and step must be non-negative JSON integers (no floats, booleans, strings or NaN/Infinity).\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/float_tokens.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/float_turn.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/float_turn.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_VALUE\",\n    \"message\": \"field 'turn' must be a non-negative integer (JSON integer, not float/bool/string), got 1.0\",\n    \"hint\": \"Token counts, turn and step must be non-negative JSON integers (no floats, booleans, strings or NaN/Infinity).\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/float_turn.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/huge_digits.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/huge_digits.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_VALUE\",\n    \"message\": \"logs/huge_digits.jsonl: line 1: integer literal has more than 4300 digits\",\n    \"hint\": \"Token counts, turn and step must be non-negative JSON integers (no floats, booleans, strings or NaN/Infinity).\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/huge_digits.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/huge_mean.jsonl"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 2\nturns:            1\nsteps per turn:   {1: 2}\n\ntotal input tokens:  20,000,000,000,000,000,000,000\ntotal output tokens: 0\n\ncache-read:               0 (0.0% of input)\npriming re-sent:          0 (0.0% of input)\nre-carried conversation:  0 (0.0% of input)\n\nmean prefix / request: 10,000,000,000,000,000,000,000    max prefix: 10,000,000,000,000,000,000,000\nprefix re-read cost:   0 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/huge_mean.jsonl",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 2,\n  \"n_turns\": 1,\n  \"steps_per_turn\": {\n    \"1\": 2\n  },\n  \"total_input\": 20000000000000000000000,\n  \"total_output\": 0,\n  \"total_cache_read\": 0,\n  \"cache_read_pct\": 0.0,\n  \"priming_total\": 0,\n  \"priming_pct\": 0.0,\n  \"conversation_total\": 0,\n  \"conversation_pct\": 0.0,\n  \"mean_prefix\": 1e+22,\n  \"max_prefix\": 10000000000000000000000,\n  \"prefix_reread_cost\": 0\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/huge_mean.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "requests=2 turns=1 input=20000000000000000000000 output=0 cache_read_pct=0.0%\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/infinity_literal.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/infinity_literal.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_JSON\",\n    \"message\": \"logs/infinity_literal.jsonl: line 1: invalid JSON\",\n    \"hint\": \"Each non-blank line must be one JSON object (JSONL); lines starting with # are skipped.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/infinity_literal.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/invalid_utf8.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/invalid_utf8.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_ENCODING\",\n    \"message\": \"logs/invalid_utf8.jsonl: not valid UTF-8\",\n    \"hint\": \"The log must be valid UTF-8 (a leading BOM is fine); re-export it as UTF-8.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/invalid_utf8.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/invalid_utf8_comment.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/invalid_utf8_comment.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_ENCODING\",\n    \"message\": \"logs/invalid_utf8_comment.jsonl: not valid UTF-8\",\n    \"hint\": \"The log must be valid UTF-8 (a leading BOM is fine); re-export it as UTF-8.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/invalid_utf8_comment.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/latin1.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/latin1.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_ENCODING\",\n    \"message\": \"logs/latin1.jsonl: not valid UTF-8\",\n    \"hint\": \"The log must be valid UTF-8 (a leading BOM is fine); re-export it as UTF-8.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/latin1.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/leading_zero.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/leading_zero.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_JSON\",\n    \"message\": \"logs/leading_zero.jsonl: line 1: invalid JSON\",\n    \"hint\": \"Each non-blank line must be one JSON object (JSONL); lines starting with # are skipped.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/leading_zero.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/list_tokens.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/list_tokens.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_VALUE\",\n    \"message\": \"field 'input_tokens' must be a non-negative integer (JSON integer, not float/bool/string), got list\",\n    \"hint\": \"Token counts, turn and step must be non-negative JSON integers (no floats, booleans, strings or NaN/Infinity).\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/list_tokens.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/missing_turn_key.jsonl",
+    "--format",
+    "openai",
+    "--turn-key",
+    "turn",
+    "--step-key",
+    "step"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/missing_turn_key.jsonl",
+    "--format",
+    "openai",
+    "--turn-key",
+    "turn",
+    "--step-key",
+    "step",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_VALUE\",\n    \"message\": \"record has no value for key 'turn'\",\n    \"hint\": \"Token counts, turn and step must be non-negative JSON integers (no floats, booleans, strings or NaN/Infinity).\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/missing_turn_key.jsonl",
+    "--format",
+    "openai",
+    "--turn-key",
+    "turn",
+    "--step-key",
+    "step",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/mixed_eol.jsonl"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 3\nturns:            2\nsteps per turn:   {1: 2, 2: 1}\n\ntotal input tokens:  2,490\ntotal output tokens: 7\n\ncache-read:               1,000 (40.2% of input)\npriming re-sent:          50 (2.0% of input)\nre-carried conversation:  0 (0.0% of input)\n\nmean prefix / request: 830    max prefix: 1,400\nprefix re-read cost:   1,000 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/mixed_eol.jsonl",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 3,\n  \"n_turns\": 2,\n  \"steps_per_turn\": {\n    \"1\": 2,\n    \"2\": 1\n  },\n  \"total_input\": 2490,\n  \"total_output\": 7,\n  \"total_cache_read\": 1000,\n  \"cache_read_pct\": 0.40160642570281124,\n  \"priming_total\": 50,\n  \"priming_pct\": 0.020080321285140562,\n  \"conversation_total\": 0,\n  \"conversation_pct\": 0.0,\n  \"mean_prefix\": 830.0,\n  \"max_prefix\": 1400,\n  \"prefix_reread_cost\": 1000\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/mixed_eol.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "requests=3 turns=2 input=2490 output=7 cache_read_pct=40.2%\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/nan_extra_field.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/nan_extra_field.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_JSON\",\n    \"message\": \"logs/nan_extra_field.jsonl: line 2: invalid JSON\",\n    \"hint\": \"Each non-blank line must be one JSON object (JSONL); lines starting with # are skipped.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/nan_extra_field.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/nan_literal.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/nan_literal.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_JSON\",\n    \"message\": \"logs/nan_literal.jsonl: line 1: invalid JSON\",\n    \"hint\": \"Each non-blank line must be one JSON object (JSONL); lines starting with # are skipped.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/nan_literal.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/neg_infinity_literal.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/neg_infinity_literal.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_JSON\",\n    \"message\": \"logs/neg_infinity_literal.jsonl: line 1: invalid JSON\",\n    \"hint\": \"Each non-blank line must be one JSON object (JSONL); lines starting with # are skipped.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/neg_infinity_literal.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/neg_tokens.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/neg_tokens.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_VALUE\",\n    \"message\": \"field 'input_tokens' must be a non-negative integer (JSON integer, not float/bool/string), got -1\",\n    \"hint\": \"Token counts, turn and step must be non-negative JSON integers (no floats, booleans, strings or NaN/Infinity).\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/neg_tokens.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/neg_zero.jsonl"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 2\nturns:            1\nsteps per turn:   {1: 2}\n\ntotal input tokens:  1,005\ntotal output tokens: 0\n\ncache-read:               0 (0.0% of input)\npriming re-sent:          0 (0.0% of input)\nre-carried conversation:  0 (0.0% of input)\n\nmean prefix / request: 502    max prefix: 1,000\nprefix re-read cost:   0 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/neg_zero.jsonl",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 2,\n  \"n_turns\": 1,\n  \"steps_per_turn\": {\n    \"1\": 2\n  },\n  \"total_input\": 1005,\n  \"total_output\": 0,\n  \"total_cache_read\": 0,\n  \"cache_read_pct\": 0.0,\n  \"priming_total\": 0,\n  \"priming_pct\": 0.0,\n  \"conversation_total\": 0,\n  \"conversation_pct\": 0.0,\n  \"mean_prefix\": 502.5,\n  \"max_prefix\": 1000,\n  \"prefix_reread_cost\": 0\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/neg_zero.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "requests=2 turns=1 input=1005 output=0 cache_read_pct=0.0%\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/nesting_ok.jsonl"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 1\nturns:            1\nsteps per turn:   {1: 1}\n\ntotal input tokens:  5\ntotal output tokens: 0\n\ncache-read:               0 (0.0% of input)\npriming re-sent:          0 (0.0% of input)\nre-carried conversation:  0 (0.0% of input)\n\nmean prefix / request: 5    max prefix: 5\nprefix re-read cost:   0 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/nesting_ok.jsonl",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 1,\n  \"n_turns\": 1,\n  \"steps_per_turn\": {\n    \"1\": 1\n  },\n  \"total_input\": 5,\n  \"total_output\": 0,\n  \"total_cache_read\": 0,\n  \"cache_read_pct\": 0.0,\n  \"priming_total\": 0,\n  \"priming_pct\": 0.0,\n  \"conversation_total\": 0,\n  \"conversation_pct\": 0.0,\n  \"mean_prefix\": 5.0,\n  \"max_prefix\": 5,\n  \"prefix_reread_cost\": 0\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/nesting_ok.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "requests=1 turns=1 input=5 output=0 cache_read_pct=0.0%\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/non_object_list.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/non_object_list.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_JSON\",\n    \"message\": \"logs/non_object_list.jsonl: line 1: each line must be a JSON object, got list\",\n    \"hint\": \"Each non-blank line must be one JSON object (JSONL); lines starting with # are skipped.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/non_object_list.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/non_object_null.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/non_object_null.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_JSON\",\n    \"message\": \"logs/non_object_null.jsonl: line 1: each line must be a JSON object, got NoneType\",\n    \"hint\": \"Each non-blank line must be one JSON object (JSONL); lines starting with # are skipped.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/non_object_null.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/non_object_scalar.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/non_object_scalar.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_JSON\",\n    \"message\": \"logs/non_object_scalar.jsonl: line 1: each line must be a JSON object, got int\",\n    \"hint\": \"Each non-blank line must be one JSON object (JSONL); lines starting with # are skipped.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/non_object_scalar.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/null_input.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/null_input.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_MISSING_FIELD\",\n    \"message\": \"record missing required field 'input_tokens'\",\n    \"hint\": \"Native logs need turn, step and input_tokens per line; for provider logs pass --format anthropic or openai.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/null_input.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/numeric_label.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/numeric_label.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_VALUE\",\n    \"message\": \"field 'label' must be a string, got 7\",\n    \"hint\": \"Token counts, turn and step must be non-negative JSON integers (no floats, booleans, strings or NaN/Infinity).\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/numeric_label.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/only_bom.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/only_bom.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_NO_REQUESTS\",\n    \"message\": \"no requests to account\",\n    \"hint\": \"The log has no records; check the file and the --format value.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/only_bom.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/overlong_utf8.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/overlong_utf8.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_ENCODING\",\n    \"message\": \"logs/overlong_utf8.jsonl: not valid UTF-8\",\n    \"hint\": \"The log must be valid UTF-8 (a leading BOM is fine); re-export it as UTF-8.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/overlong_utf8.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/plus_sign.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/plus_sign.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_JSON\",\n    \"message\": \"logs/plus_sign.jsonl: line 1: invalid JSON\",\n    \"hint\": \"Each non-blank line must be one JSON object (JSONL); lines starting with # are skipped.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/plus_sign.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/single_quotes.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/single_quotes.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_JSON\",\n    \"message\": \"logs/single_quotes.jsonl: line 1: invalid JSON\",\n    \"hint\": \"Each non-blank line must be one JSON object (JSONL); lines starting with # are skipped.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/single_quotes.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/str_anthropic.jsonl",
+    "--format",
+    "anthropic"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/str_anthropic.jsonl",
+    "--format",
+    "anthropic",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_VALUE\",\n    \"message\": \"field 'input_tokens' must be a non-negative integer (JSON integer, not float/bool/string), got \\\"100\\\"\",\n    \"hint\": \"Token counts, turn and step must be non-negative JSON integers (no floats, booleans, strings or NaN/Infinity).\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/str_anthropic.jsonl",
+    "--format",
+    "anthropic",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/str_output.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/str_output.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_VALUE\",\n    \"message\": \"field 'output_tokens' must be a non-negative integer (JSON integer, not float/bool/string), got \\\"7\\\"\",\n    \"hint\": \"Token counts, turn and step must be non-negative JSON integers (no floats, booleans, strings or NaN/Infinity).\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/str_output.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/str_tokens.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/str_tokens.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_VALUE\",\n    \"message\": \"field 'input_tokens' must be a non-negative integer (JSON integer, not float/bool/string), got \\\"100\\\"\",\n    \"hint\": \"Token counts, turn and step must be non-negative JSON integers (no floats, booleans, strings or NaN/Infinity).\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/str_tokens.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/str_turn_key.jsonl",
+    "--format",
+    "openai",
+    "--turn-key",
+    "turn",
+    "--step-key",
+    "step"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/str_turn_key.jsonl",
+    "--format",
+    "openai",
+    "--turn-key",
+    "turn",
+    "--step-key",
+    "step",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_VALUE\",\n    \"message\": \"field 'turn' must be a non-negative integer (JSON integer, not float/bool/string), got \\\"1\\\"\",\n    \"hint\": \"Token counts, turn and step must be non-negative JSON integers (no floats, booleans, strings or NaN/Infinity).\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/str_turn_key.jsonl",
+    "--format",
+    "openai",
+    "--turn-key",
+    "turn",
+    "--step-key",
+    "step",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/surrogate_utf8.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/surrogate_utf8.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_ENCODING\",\n    \"message\": \"logs/surrogate_utf8.jsonl: not valid UTF-8\",\n    \"hint\": \"The log must be valid UTF-8 (a leading BOM is fine); re-export it as UTF-8.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/surrogate_utf8.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/trailing_comma.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/trailing_comma.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_JSON\",\n    \"message\": \"logs/trailing_comma.jsonl: line 1: invalid JSON\",\n    \"hint\": \"Each non-blank line must be one JSON object (JSONL); lines starting with # are skipped.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/trailing_comma.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/trailing_garbage.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/trailing_garbage.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_JSON\",\n    \"message\": \"logs/trailing_garbage.jsonl: line 1: invalid JSON\",\n    \"hint\": \"Each non-blank line must be one JSON object (JSONL); lines starting with # are skipped.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/trailing_garbage.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/unicode_label.jsonl"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 1\nturns:            1\nsteps per turn:   {1: 1}\n\ntotal input tokens:  5\ntotal output tokens: 0\n\ncache-read:               0 (0.0% of input)\npriming re-sent:          0 (0.0% of input)\nre-carried conversation:  0 (0.0% of input)\n\nmean prefix / request: 5    max prefix: 5\nprefix re-read cost:   0 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/unicode_label.jsonl",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 1,\n  \"n_turns\": 1,\n  \"steps_per_turn\": {\n    \"1\": 1\n  },\n  \"total_input\": 5,\n  \"total_output\": 0,\n  \"total_cache_read\": 0,\n  \"cache_read_pct\": 0.0,\n  \"priming_total\": 0,\n  \"priming_pct\": 0.0,\n  \"conversation_total\": 0,\n  \"conversation_pct\": 0.0,\n  \"mean_prefix\": 5.0,\n  \"max_prefix\": 5,\n  \"prefix_reread_cost\": 0\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/unicode_label.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "requests=1 turns=1 input=5 output=0 cache_read_pct=0.0%\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/unicode_ws.jsonl"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 3\nturns:            2\nsteps per turn:   {1: 2, 2: 1}\n\ntotal input tokens:  2,490\ntotal output tokens: 7\n\ncache-read:               1,000 (40.2% of input)\npriming re-sent:          50 (2.0% of input)\nre-carried conversation:  0 (0.0% of input)\n\nmean prefix / request: 830    max prefix: 1,400\nprefix re-read cost:   1,000 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/unicode_ws.jsonl",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"n_requests\": 3,\n  \"n_turns\": 2,\n  \"steps_per_turn\": {\n    \"1\": 2,\n    \"2\": 1\n  },\n  \"total_input\": 2490,\n  \"total_output\": 7,\n  \"total_cache_read\": 1000,\n  \"cache_read_pct\": 0.40160642570281124,\n  \"priming_total\": 50,\n  \"priming_pct\": 0.020080321285140562,\n  \"conversation_total\": 0,\n  \"conversation_pct\": 0.0,\n  \"mean_prefix\": 830.0,\n  \"max_prefix\": 1400,\n  \"prefix_reread_cost\": 1000\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/unicode_ws.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "requests=3 turns=2 input=2490 output=7 cache_read_pct=40.2%\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/utf16.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/utf16.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_BAD_ENCODING\",\n    \"message\": \"logs/utf16.jsonl: not valid UTF-8\",\n    \"hint\": \"The log must be valid UTF-8 (a leading BOM is fine); re-export it as UTF-8.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/utf16.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/whitespace_only.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/whitespace_only.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_NO_REQUESTS\",\n    \"message\": \"no requests to account\",\n    \"hint\": \"The log has no records; check the file and the --format value.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/whitespace_only.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/big_ints.jsonl",
+    "--turn",
+    "1",
+    "--step",
+    "0"
+   ],
+   "exit_code": 0,
+   "stdout": "turn 1 step 0: removing it saves 18,014,398,509,481,986 input tokens\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/big_ints.jsonl",
+    "--turn",
+    "1",
+    "--step",
+    "0",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"turn\": 1,\n  \"step\": 0,\n  \"tokens_saved\": 18014398509481986\n}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/big_ints.jsonl",
+    "--turn",
+    "1",
+    "--step",
+    "0",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "18014398509481986\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/big_ints.jsonl",
+    "--turn",
+    "18446744073709551616",
+    "--step",
+    "0"
+   ],
+   "exit_code": 0,
+   "stdout": "turn 18446744073709551616 step 0: removing it saves 123,456,789,012,345,678,901,234,567,890 input tokens\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/big_ints.jsonl",
+    "--turn",
+    "18446744073709551616",
+    "--step",
+    "0",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"turn\": 18446744073709551616,\n  \"step\": 0,\n  \"tokens_saved\": 123456789012345678901234567890\n}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/big_ints.jsonl",
+    "--turn",
+    "18446744073709551616",
+    "--step",
+    "0",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "123456789012345678901234567890\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/neg_zero.jsonl",
+    "--turn",
+    "1",
+    "--step",
+    "0",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"turn\": 1,\n  \"step\": 0,\n  \"tokens_saved\": 1000\n}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/bom.jsonl",
+    "--turn",
+    "1",
+    "--step",
+    "0"
+   ],
+   "exit_code": 0,
+   "stdout": "turn 1 step 0: removing it saves 1,200 input tokens\n"
+  }
+ ],
+ "cli_parity": [
+  {
+   "args": [
+    "x"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "x",
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"argument cmd: invalid choice: 'x' (choose from 'report', 'what-if', 'describe', 'mcp')\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "--bogus"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "--bogus",
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"unrecognized arguments: --bogus --json\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"unrecognized arguments: --json\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "--quiet"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "--help"
+   ],
+   "exit_code": 0,
+   "stdout": "usage: tokenledger [-h] {report,what-if,describe,mcp} ...\n\nMeasure the cost structure of multi-agent LLM systems from request logs.\n\npositional arguments:\n  {report,what-if,describe,mcp}\n    report              print a cost-structure report for a JSONL log\n    what-if             input tokens saved by removing one (turn, step)\n    describe            print tool definitions (Anthropic, OpenAI, MCP) as\n                        JSON\n    mcp                 run an MCP server on stdio exposing the tools\n\noptions:\n  -h, --help            show this help message and exit\n"
+  },
+  {
+   "args": [
+    "-h"
+   ],
+   "exit_code": 0,
+   "stdout": "usage: tokenledger [-h] {report,what-if,describe,mcp} ...\n\nMeasure the cost structure of multi-agent LLM systems from request logs.\n\npositional arguments:\n  {report,what-if,describe,mcp}\n    report              print a cost-structure report for a JSONL log\n    what-if             input tokens saved by removing one (turn, step)\n    describe            print tool definitions (Anthropic, OpenAI, MCP) as\n                        JSON\n    mcp                 run an MCP server on stdio exposing the tools\n\noptions:\n  -h, --help            show this help message and exit\n"
+  },
+  {
+   "args": [
+    "-h",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "usage: tokenledger [-h] {report,what-if,describe,mcp} ...\n\nMeasure the cost structure of multi-agent LLM systems from request logs.\n\npositional arguments:\n  {report,what-if,describe,mcp}\n    report              print a cost-structure report for a JSONL log\n    what-if             input tokens saved by removing one (turn, step)\n    describe            print tool definitions (Anthropic, OpenAI, MCP) as\n                        JSON\n    mcp                 run an MCP server on stdio exposing the tools\n\noptions:\n  -h, --help            show this help message and exit\n"
+  },
+  {
+   "args": [
+    "x",
+    "--help"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "--help"
+   ],
+   "exit_code": 0,
+   "stdout": "usage: tokenledger report [-h] [--json] [--quiet]\n                          [--format {native,anthropic,openai}]\n                          [--turn-key TURN_KEY] [--step-key STEP_KEY]\n                          [--usage-key USAGE_KEY]\n                          logfile\n\npositional arguments:\n  logfile               path to a JSONL request log\n\noptions:\n  -h, --help            show this help message and exit\n  --json                emit JSON instead of text\n  --quiet               compact output (one line / minimal JSON)\n  --format {native,anthropic,openai}\n                        log format: 'native' tokenledger fields (default), or\n                        a provider usage log\n  --turn-key TURN_KEY   record field naming the turn (provider formats)\n  --step-key STEP_KEY   record field naming the step (provider formats)\n  --usage-key USAGE_KEY\n                        record field holding the usage sub-object (default:\n                        'usage' if present, else top level)\n"
+  },
+  {
+   "args": [
+    "report",
+    "-h"
+   ],
+   "exit_code": 0,
+   "stdout": "usage: tokenledger report [-h] [--json] [--quiet]\n                          [--format {native,anthropic,openai}]\n                          [--turn-key TURN_KEY] [--step-key STEP_KEY]\n                          [--usage-key USAGE_KEY]\n                          logfile\n\npositional arguments:\n  logfile               path to a JSONL request log\n\noptions:\n  -h, --help            show this help message and exit\n  --json                emit JSON instead of text\n  --quiet               compact output (one line / minimal JSON)\n  --format {native,anthropic,openai}\n                        log format: 'native' tokenledger fields (default), or\n                        a provider usage log\n  --turn-key TURN_KEY   record field naming the turn (provider formats)\n  --step-key STEP_KEY   record field naming the step (provider formats)\n  --usage-key USAGE_KEY\n                        record field holding the usage sub-object (default:\n                        'usage' if present, else top level)\n"
+  },
+  {
+   "args": [
+    "report",
+    "-h",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "usage: tokenledger report [-h] [--json] [--quiet]\n                          [--format {native,anthropic,openai}]\n                          [--turn-key TURN_KEY] [--step-key STEP_KEY]\n                          [--usage-key USAGE_KEY]\n                          logfile\n\npositional arguments:\n  logfile               path to a JSONL request log\n\noptions:\n  -h, --help            show this help message and exit\n  --json                emit JSON instead of text\n  --quiet               compact output (one line / minimal JSON)\n  --format {native,anthropic,openai}\n                        log format: 'native' tokenledger fields (default), or\n                        a provider usage log\n  --turn-key TURN_KEY   record field naming the turn (provider formats)\n  --step-key STEP_KEY   record field naming the step (provider formats)\n  --usage-key USAGE_KEY\n                        record field holding the usage sub-object (default:\n                        'usage' if present, else top level)\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "--help"
+   ],
+   "exit_code": 0,
+   "stdout": "usage: tokenledger what-if [-h] [--json] [--quiet]\n                           [--format {native,anthropic,openai}]\n                           [--turn-key TURN_KEY] [--step-key STEP_KEY]\n                           [--usage-key USAGE_KEY] --turn TURN --step STEP\n                           logfile\n\npositional arguments:\n  logfile               path to a JSONL request log\n\noptions:\n  -h, --help            show this help message and exit\n  --json                emit JSON instead of text\n  --quiet               compact output (one line / minimal JSON)\n  --format {native,anthropic,openai}\n                        log format: 'native' tokenledger fields (default), or\n                        a provider usage log\n  --turn-key TURN_KEY   record field naming the turn (provider formats)\n  --step-key STEP_KEY   record field naming the step (provider formats)\n  --usage-key USAGE_KEY\n                        record field holding the usage sub-object (default:\n                        'usage' if present, else top level)\n  --turn TURN           turn number as in the log\n  --step STEP           step index within the turn\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "-h"
+   ],
+   "exit_code": 0,
+   "stdout": "usage: tokenledger what-if [-h] [--json] [--quiet]\n                           [--format {native,anthropic,openai}]\n                           [--turn-key TURN_KEY] [--step-key STEP_KEY]\n                           [--usage-key USAGE_KEY] --turn TURN --step STEP\n                           logfile\n\npositional arguments:\n  logfile               path to a JSONL request log\n\noptions:\n  -h, --help            show this help message and exit\n  --json                emit JSON instead of text\n  --quiet               compact output (one line / minimal JSON)\n  --format {native,anthropic,openai}\n                        log format: 'native' tokenledger fields (default), or\n                        a provider usage log\n  --turn-key TURN_KEY   record field naming the turn (provider formats)\n  --step-key STEP_KEY   record field naming the step (provider formats)\n  --usage-key USAGE_KEY\n                        record field holding the usage sub-object (default:\n                        'usage' if present, else top level)\n  --turn TURN           turn number as in the log\n  --step STEP           step index within the turn\n"
+  },
+  {
+   "args": [
+    "describe",
+    "--help"
+   ],
+   "exit_code": 0,
+   "stdout": "usage: tokenledger describe [-h] [--json] [--quiet]\n\noptions:\n  -h, --help  show this help message and exit\n  --json      accepted for uniformity; output is always JSON\n  --quiet     compact JSON\n"
+  },
+  {
+   "args": [
+    "describe",
+    "-h"
+   ],
+   "exit_code": 0,
+   "stdout": "usage: tokenledger describe [-h] [--json] [--quiet]\n\noptions:\n  -h, --help  show this help message and exit\n  --json      accepted for uniformity; output is always JSON\n  --quiet     compact JSON\n"
+  },
+  {
+   "args": [
+    "mcp",
+    "-h"
+   ],
+   "exit_code": 0,
+   "stdout": "usage: tokenledger mcp [-h]\n\noptions:\n  -h, --help  show this help message and exit\n"
+  },
+  {
+   "args": [
+    "mcp",
+    "--help"
+   ],
+   "exit_code": 0,
+   "stdout": "usage: tokenledger mcp [-h]\n\noptions:\n  -h, --help  show this help message and exit\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--help"
+   ],
+   "exit_code": 0,
+   "stdout": "usage: tokenledger report [-h] [--json] [--quiet]\n                          [--format {native,anthropic,openai}]\n                          [--turn-key TURN_KEY] [--step-key STEP_KEY]\n                          [--usage-key USAGE_KEY]\n                          logfile\n\npositional arguments:\n  logfile               path to a JSONL request log\n\noptions:\n  -h, --help            show this help message and exit\n  --json                emit JSON instead of text\n  --quiet               compact output (one line / minimal JSON)\n  --format {native,anthropic,openai}\n                        log format: 'native' tokenledger fields (default), or\n                        a provider usage log\n  --turn-key TURN_KEY   record field naming the turn (provider formats)\n  --step-key STEP_KEY   record field naming the step (provider formats)\n  --usage-key USAGE_KEY\n                        record field holding the usage sub-object (default:\n                        'usage' if present, else top level)\n"
+  },
+  {
+   "args": [
+    "report",
+    "--format",
+    "bogus",
+    "-h"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--js"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--js",
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"unrecognized arguments: --js\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--form",
+    "openai"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--quie"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--turn-k",
+    "t"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--format=openai"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 4\nturns:            1\nsteps per turn:   {1: 4}\n\ntotal input tokens:  0\ntotal output tokens: 0\n\ncache-read:               0 (0.0% of input)\npriming re-sent:          0 (0.0% of input)\nre-carried conversation:  0 (0.0% of input)\n\nmean prefix / request: 0    max prefix: 0\nprefix re-read cost:   0 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--format=bogus"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--format"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--format",
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"argument --format: expected one argument\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--format",
+    "bogus"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--format",
+    "bogus",
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"argument --format: invalid choice: 'bogus' (choose from 'native', 'anthropic', 'openai')\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--json=1"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--quiet=x",
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"argument --quiet: ignored explicit argument 'x'\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/nope.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/nope.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_FILE_NOT_FOUND\",\n    \"message\": \"No such file or directory: 'logs/nope.jsonl'\",\n    \"hint\": \"Check the path; it is resolved against the current working directory.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    ""
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_FILE_NOT_FOUND\",\n    \"message\": \"No such file or directory: ''\",\n    \"hint\": \"Check the path; it is resolved against the current working directory.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"the following arguments are required: logfile\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "extra"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "extra",
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"unrecognized arguments: extra\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "a",
+    "b",
+    "c",
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"unrecognized arguments: b c\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"the following arguments are required: --turn, --step\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "1"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "1",
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"the following arguments are required: --step\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"the following arguments are required: logfile, --turn, --step\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "x",
+    "--step",
+    "0"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "x",
+    "--step",
+    "0",
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"argument --turn: invalid int value: 'x'\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "1.5",
+    "--step",
+    "0",
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"argument --turn: invalid int value: '1.5'\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "",
+    "--step",
+    "0",
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"argument --turn: invalid int value: ''\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "1_0",
+    "--step",
+    "0",
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"argument --turn: invalid int value: '1_0'\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    " 1",
+    "--step",
+    "0",
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"argument --turn: invalid int value: ' 1'\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "١",
+    "--step",
+    "0",
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"argument --turn: invalid int value: '\\u0661'\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "+1",
+    "--step",
+    "0"
+   ],
+   "exit_code": 0,
+   "stdout": "turn 1 step 0: removing it saves 22,216 input tokens\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "01",
+    "--step",
+    "-0",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"turn\": 1,\n  \"step\": 0,\n  \"tokens_saved\": 22216\n}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "-1",
+    "--step",
+    "0"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "-1",
+    "--step",
+    "0",
+    "--json"
+   ],
+   "exit_code": 1,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_STEP_NOT_FOUND\",\n    \"message\": \"no step 0 in turn -1\",\n    \"hint\": \"Run `tokenledger report LOG --json` and read steps_per_turn for valid turn/step pairs.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn=1",
+    "--step=0"
+   ],
+   "exit_code": 0,
+   "stdout": "turn 1 step 0: removing it saves 22,216 input tokens\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "1",
+    "--step",
+    "0",
+    "--turn",
+    "2"
+   ],
+   "exit_code": 0,
+   "stdout": "turn 2 step 0: removing it saves 24,000 input tokens\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--tur",
+    "1",
+    "--step",
+    "0",
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"the following arguments are required: --turn\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "1",
+    "--step"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "what-if",
+    "--turn",
+    "1",
+    "--step",
+    "0",
+    "logs/sample.jsonl"
+   ],
+   "exit_code": 0,
+   "stdout": "turn 1 step 0: removing it saves 22,216 input tokens\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "1",
+    "--step",
+    "0",
+    "--format",
+    "x"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "1",
+    "--step",
+    "0",
+    "-x",
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"unrecognized arguments: -x\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "describe",
+    "x"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "describe",
+    "x",
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"unrecognized arguments: x\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "describe",
+    "--format",
+    "native"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "describe",
+    "--js"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "describe",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "{\"anthropic\":[{\"name\":\"tokenledger_report\",\"description\":\"Compute the cost-structure report for a JSONL LLM request log: totals, cache-read share, priming share, conversation share, prefix sizes, steps per turn. Read-only. Returns the same object as `tokenledger report LOGFILE --json`. Call it directly: the log file is in the working directory, so never ask the user to paste it and never guess numbers. Only `logfile` is required for a native log; for Anthropic/OpenAI usage logs also pass format (and turn_key/step_key if the records carry `turn`/`step`). Read total_input, total_cache_read, n_turns from the result and quote them as plain digits (61700, not 61,700). A bad log returns isError with {error:{code,message,hint}}: quote `code` exactly (e.g. TL_E_MISSING_FIELD). Examples: {\\\"logfile\\\":\\\"log.jsonl\\\"}; {\\\"logfile\\\":\\\"oa.jsonl\\\",\\\"format\\\":\\\"openai\\\",\\\"turn_key\\\":\\\"turn\\\",\\\"step_key\\\":\\\"step\\\"}; {\\\"logfile\\\":\\\"usage.jsonl\\\",\\\"format\\\":\\\"anthropic\\\"}.\",\"input_schema\":{\"type\":\"object\",\"properties\":{\"logfile\":{\"type\":\"string\",\"description\":\"Path to the JSONL log (relative to the working directory).\"},\"format\":{\"type\":\"string\",\"enum\":[\"native\",\"anthropic\",\"openai\"],\"default\":\"native\",\"description\":\"Log format: native tokenledger fields, or Anthropic/OpenAI usage records.\"},\"turn_key\":{\"type\":\"string\",\"description\":\"Record field naming the turn (provider formats only).\"},\"step_key\":{\"type\":\"string\",\"description\":\"Record field naming the step (provider formats only).\"},\"usage_key\":{\"type\":\"string\",\"description\":\"Record field holding the usage object (provider formats only).\"}},\"required\":[\"logfile\"],\"additionalProperties\":false}},{\"name\":\"tokenledger_what_if\",\"description\":\"Estimate input tokens saved by removing one step (turn, step) from a log: its own input plus its tool result re-carried into every later step of that turn. Read-only. Returns {turn, step, tokens_saved}. The log file is in the working directory; call the tool directly. Example: {\\\"logfile\\\":\\\"log.jsonl\\\",\\\"turn\\\":1,\\\"step\\\":0}.\",\"input_schema\":{\"type\":\"object\",\"properties\":{\"logfile\":{\"type\":\"string\",\"description\":\"Path to the JSONL log (relative to the working directory).\"},\"turn\":{\"type\":\"integer\",\"description\":\"Turn number as it appears in the log.\"},\"step\":{\"type\":\"integer\",\"description\":\"Step index within the turn.\"},\"format\":{\"type\":\"string\",\"enum\":[\"native\",\"anthropic\",\"openai\"],\"default\":\"native\",\"description\":\"Log format.\"},\"turn_key\":{\"type\":\"string\",\"description\":\"Record field naming the turn (provider formats only).\"},\"step_key\":{\"type\":\"string\",\"description\":\"Record field naming the step (provider formats only).\"},\"usage_key\":{\"type\":\"string\",\"description\":\"Record field holding the usage object (provider formats only).\"}},\"required\":[\"logfile\",\"turn\",\"step\"],\"additionalProperties\":false}}],\"openai\":[{\"type\":\"function\",\"function\":{\"name\":\"tokenledger_report\",\"description\":\"Compute the cost-structure report for a JSONL LLM request log: totals, cache-read share, priming share, conversation share, prefix sizes, steps per turn. Read-only. Returns the same object as `tokenledger report LOGFILE --json`. Call it directly: the log file is in the working directory, so never ask the user to paste it and never guess numbers. Only `logfile` is required for a native log; for Anthropic/OpenAI usage logs also pass format (and turn_key/step_key if the records carry `turn`/`step`). Read total_input, total_cache_read, n_turns from the result and quote them as plain digits (61700, not 61,700). A bad log returns isError with {error:{code,message,hint}}: quote `code` exactly (e.g. TL_E_MISSING_FIELD). Examples: {\\\"logfile\\\":\\\"log.jsonl\\\"}; {\\\"logfile\\\":\\\"oa.jsonl\\\",\\\"format\\\":\\\"openai\\\",\\\"turn_key\\\":\\\"turn\\\",\\\"step_key\\\":\\\"step\\\"}; {\\\"logfile\\\":\\\"usage.jsonl\\\",\\\"format\\\":\\\"anthropic\\\"}.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"logfile\":{\"type\":\"string\",\"description\":\"Path to the JSONL log (relative to the working directory).\"},\"format\":{\"type\":\"string\",\"enum\":[\"native\",\"anthropic\",\"openai\"],\"default\":\"native\",\"description\":\"Log format: native tokenledger fields, or Anthropic/OpenAI usage records.\"},\"turn_key\":{\"type\":\"string\",\"description\":\"Record field naming the turn (provider formats only).\"},\"step_key\":{\"type\":\"string\",\"description\":\"Record field naming the step (provider formats only).\"},\"usage_key\":{\"type\":\"string\",\"description\":\"Record field holding the usage object (provider formats only).\"}},\"required\":[\"logfile\"],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"tokenledger_what_if\",\"description\":\"Estimate input tokens saved by removing one step (turn, step) from a log: its own input plus its tool result re-carried into every later step of that turn. Read-only. Returns {turn, step, tokens_saved}. The log file is in the working directory; call the tool directly. Example: {\\\"logfile\\\":\\\"log.jsonl\\\",\\\"turn\\\":1,\\\"step\\\":0}.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"logfile\":{\"type\":\"string\",\"description\":\"Path to the JSONL log (relative to the working directory).\"},\"turn\":{\"type\":\"integer\",\"description\":\"Turn number as it appears in the log.\"},\"step\":{\"type\":\"integer\",\"description\":\"Step index within the turn.\"},\"format\":{\"type\":\"string\",\"enum\":[\"native\",\"anthropic\",\"openai\"],\"default\":\"native\",\"description\":\"Log format.\"},\"turn_key\":{\"type\":\"string\",\"description\":\"Record field naming the turn (provider formats only).\"},\"step_key\":{\"type\":\"string\",\"description\":\"Record field naming the step (provider formats only).\"},\"usage_key\":{\"type\":\"string\",\"description\":\"Record field holding the usage object (provider formats only).\"}},\"required\":[\"logfile\",\"turn\",\"step\"],\"additionalProperties\":false}}}],\"mcp\":[{\"name\":\"tokenledger_report\",\"description\":\"Compute the cost-structure report for a JSONL LLM request log: totals, cache-read share, priming share, conversation share, prefix sizes, steps per turn. Read-only. Returns the same object as `tokenledger report LOGFILE --json`. Call it directly: the log file is in the working directory, so never ask the user to paste it and never guess numbers. Only `logfile` is required for a native log; for Anthropic/OpenAI usage logs also pass format (and turn_key/step_key if the records carry `turn`/`step`). Read total_input, total_cache_read, n_turns from the result and quote them as plain digits (61700, not 61,700). A bad log returns isError with {error:{code,message,hint}}: quote `code` exactly (e.g. TL_E_MISSING_FIELD). Examples: {\\\"logfile\\\":\\\"log.jsonl\\\"}; {\\\"logfile\\\":\\\"oa.jsonl\\\",\\\"format\\\":\\\"openai\\\",\\\"turn_key\\\":\\\"turn\\\",\\\"step_key\\\":\\\"step\\\"}; {\\\"logfile\\\":\\\"usage.jsonl\\\",\\\"format\\\":\\\"anthropic\\\"}.\",\"inputSchema\":{\"type\":\"object\",\"properties\":{\"logfile\":{\"type\":\"string\",\"description\":\"Path to the JSONL log (relative to the working directory).\"},\"format\":{\"type\":\"string\",\"enum\":[\"native\",\"anthropic\",\"openai\"],\"default\":\"native\",\"description\":\"Log format: native tokenledger fields, or Anthropic/OpenAI usage records.\"},\"turn_key\":{\"type\":\"string\",\"description\":\"Record field naming the turn (provider formats only).\"},\"step_key\":{\"type\":\"string\",\"description\":\"Record field naming the step (provider formats only).\"},\"usage_key\":{\"type\":\"string\",\"description\":\"Record field holding the usage object (provider formats only).\"}},\"required\":[\"logfile\"],\"additionalProperties\":false}},{\"name\":\"tokenledger_what_if\",\"description\":\"Estimate input tokens saved by removing one step (turn, step) from a log: its own input plus its tool result re-carried into every later step of that turn. Read-only. Returns {turn, step, tokens_saved}. The log file is in the working directory; call the tool directly. Example: {\\\"logfile\\\":\\\"log.jsonl\\\",\\\"turn\\\":1,\\\"step\\\":0}.\",\"inputSchema\":{\"type\":\"object\",\"properties\":{\"logfile\":{\"type\":\"string\",\"description\":\"Path to the JSONL log (relative to the working directory).\"},\"turn\":{\"type\":\"integer\",\"description\":\"Turn number as it appears in the log.\"},\"step\":{\"type\":\"integer\",\"description\":\"Step index within the turn.\"},\"format\":{\"type\":\"string\",\"enum\":[\"native\",\"anthropic\",\"openai\"],\"default\":\"native\",\"description\":\"Log format.\"},\"turn_key\":{\"type\":\"string\",\"description\":\"Record field naming the turn (provider formats only).\"},\"step_key\":{\"type\":\"string\",\"description\":\"Record field naming the step (provider formats only).\"},\"usage_key\":{\"type\":\"string\",\"description\":\"Record field holding the usage object (provider formats only).\"}},\"required\":[\"logfile\",\"turn\",\"step\"],\"additionalProperties\":false}}]}\n"
+  },
+  {
+   "args": [
+    "mcp",
+    "x"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "mcp",
+    "--json"
+   ],
+   "exit_code": 2,
+   "stdout": "{\n  \"error\": {\n    \"code\": \"TL_E_USAGE\",\n    \"message\": \"unrecognized arguments: --json\",\n    \"hint\": \"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"\n  }\n}\n"
+  },
+  {
+   "args": [
+    "describe",
+    "--help",
+    "--bogus"
+   ],
+   "exit_code": 0,
+   "stdout": "usage: tokenledger describe [-h] [--json] [--quiet]\n\noptions:\n  -h, --help  show this help message and exit\n  --json      accepted for uniformity; output is always JSON\n  --quiet     compact JSON\n"
+  },
+  {
+   "args": [
+    "describe",
+    "--bogus",
+    "--help"
+   ],
+   "exit_code": 0,
+   "stdout": "usage: tokenledger describe [-h] [--json] [--quiet]\n\noptions:\n  -h, --help  show this help message and exit\n  --json      accepted for uniformity; output is always JSON\n  --quiet     compact JSON\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "-q"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "-"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "-"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--turn-key",
+    "-1",
+    "--format",
+    "openai"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--turn-key",
+    "-x"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--turn-key",
+    "a b"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 4\nturns:            2\nsteps per turn:   {1: 3, 2: 1}\n\ntotal input tokens:  89,532\ntotal output tokens: 505\n\ncache-read:               88,432 (98.8% of input)\npriming re-sent:          80,464 (89.9% of input)\nre-carried conversation:  7,968 (8.9% of input)\n\nmean prefix / request: 22,383    max prefix: 24,000\nprefix re-read cost:   88,432 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "--",
+    "report",
+    "logs/sample.jsonl"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report",
+    "--",
+    "logs/sample.jsonl"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 4\nturns:            2\nsteps per turn:   {1: 3, 2: 1}\n\ntotal input tokens:  89,532\ntotal output tokens: 505\n\ncache-read:               88,432 (98.8% of input)\npriming re-sent:          80,464 (89.9% of input)\nre-carried conversation:  7,968 (8.9% of input)\n\nmean prefix / request: 22,383    max prefix: 24,000\nprefix re-read cost:   88,432 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--"
+   ],
+   "exit_code": 0,
+   "stdout": "tokenledger — cost structure report\n==========================================\nrequests (steps): 4\nturns:            2\nsteps per turn:   {1: 3, 2: 1}\n\ntotal input tokens:  89,532\ntotal output tokens: 505\n\ncache-read:               88,432 (98.8% of input)\npriming re-sent:          80,464 (89.9% of input)\nre-carried conversation:  7,968 (8.9% of input)\n\nmean prefix / request: 22,383    max prefix: 24,000\nprefix re-read cost:   88,432 tokens\n\ntakeaway: cost tracks (prefix size x requests), dominated by cache re-reads —\nnot prompt size. Cut steps and reset context to move the bill.\n"
+  },
+  {
+   "args": [
+    "Report",
+    "logs/sample.jsonl"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "report ",
+    "logs/sample.jsonl"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "what_if",
+    "logs/sample.jsonl"
+   ],
+   "exit_code": 2,
+   "stdout": ""
+  }
+ ],
+ "agent_cli": [
+  {
+   "args": [
+    "describe"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"anthropic\": [\n    {\n      \"name\": \"tokenledger_report\",\n      \"description\": \"Compute the cost-structure report for a JSONL LLM request log: totals, cache-read share, priming share, conversation share, prefix sizes, steps per turn. Read-only. Returns the same object as `tokenledger report LOGFILE --json`. Call it directly: the log file is in the working directory, so never ask the user to paste it and never guess numbers. Only `logfile` is required for a native log; for Anthropic/OpenAI usage logs also pass format (and turn_key/step_key if the records carry `turn`/`step`). Read total_input, total_cache_read, n_turns from the result and quote them as plain digits (61700, not 61,700). A bad log returns isError with {error:{code,message,hint}}: quote `code` exactly (e.g. TL_E_MISSING_FIELD). Examples: {\\\"logfile\\\":\\\"log.jsonl\\\"}; {\\\"logfile\\\":\\\"oa.jsonl\\\",\\\"format\\\":\\\"openai\\\",\\\"turn_key\\\":\\\"turn\\\",\\\"step_key\\\":\\\"step\\\"}; {\\\"logfile\\\":\\\"usage.jsonl\\\",\\\"format\\\":\\\"anthropic\\\"}.\",\n      \"input_schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"logfile\": {\n            \"type\": \"string\",\n            \"description\": \"Path to the JSONL log (relative to the working directory).\"\n          },\n          \"format\": {\n            \"type\": \"string\",\n            \"enum\": [\n              \"native\",\n              \"anthropic\",\n              \"openai\"\n            ],\n            \"default\": \"native\",\n            \"description\": \"Log format: native tokenledger fields, or Anthropic/OpenAI usage records.\"\n          },\n          \"turn_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field naming the turn (provider formats only).\"\n          },\n          \"step_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field naming the step (provider formats only).\"\n          },\n          \"usage_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field holding the usage object (provider formats only).\"\n          }\n        },\n        \"required\": [\n          \"logfile\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    {\n      \"name\": \"tokenledger_what_if\",\n      \"description\": \"Estimate input tokens saved by removing one step (turn, step) from a log: its own input plus its tool result re-carried into every later step of that turn. Read-only. Returns {turn, step, tokens_saved}. The log file is in the working directory; call the tool directly. Example: {\\\"logfile\\\":\\\"log.jsonl\\\",\\\"turn\\\":1,\\\"step\\\":0}.\",\n      \"input_schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"logfile\": {\n            \"type\": \"string\",\n            \"description\": \"Path to the JSONL log (relative to the working directory).\"\n          },\n          \"turn\": {\n            \"type\": \"integer\",\n            \"description\": \"Turn number as it appears in the log.\"\n          },\n          \"step\": {\n            \"type\": \"integer\",\n            \"description\": \"Step index within the turn.\"\n          },\n          \"format\": {\n            \"type\": \"string\",\n            \"enum\": [\n              \"native\",\n              \"anthropic\",\n              \"openai\"\n            ],\n            \"default\": \"native\",\n            \"description\": \"Log format.\"\n          },\n          \"turn_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field naming the turn (provider formats only).\"\n          },\n          \"step_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field naming the step (provider formats only).\"\n          },\n          \"usage_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field holding the usage object (provider formats only).\"\n          }\n        },\n        \"required\": [\n          \"logfile\",\n          \"turn\",\n          \"step\"\n        ],\n        \"additionalProperties\": false\n      }\n    }\n  ],\n  \"openai\": [\n    {\n      \"type\": \"function\",\n      \"function\": {\n        \"name\": \"tokenledger_report\",\n        \"description\": \"Compute the cost-structure report for a JSONL LLM request log: totals, cache-read share, priming share, conversation share, prefix sizes, steps per turn. Read-only. Returns the same object as `tokenledger report LOGFILE --json`. Call it directly: the log file is in the working directory, so never ask the user to paste it and never guess numbers. Only `logfile` is required for a native log; for Anthropic/OpenAI usage logs also pass format (and turn_key/step_key if the records carry `turn`/`step`). Read total_input, total_cache_read, n_turns from the result and quote them as plain digits (61700, not 61,700). A bad log returns isError with {error:{code,message,hint}}: quote `code` exactly (e.g. TL_E_MISSING_FIELD). Examples: {\\\"logfile\\\":\\\"log.jsonl\\\"}; {\\\"logfile\\\":\\\"oa.jsonl\\\",\\\"format\\\":\\\"openai\\\",\\\"turn_key\\\":\\\"turn\\\",\\\"step_key\\\":\\\"step\\\"}; {\\\"logfile\\\":\\\"usage.jsonl\\\",\\\"format\\\":\\\"anthropic\\\"}.\",\n        \"parameters\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"logfile\": {\n              \"type\": \"string\",\n              \"description\": \"Path to the JSONL log (relative to the working directory).\"\n            },\n            \"format\": {\n              \"type\": \"string\",\n              \"enum\": [\n                \"native\",\n                \"anthropic\",\n                \"openai\"\n              ],\n              \"default\": \"native\",\n              \"description\": \"Log format: native tokenledger fields, or Anthropic/OpenAI usage records.\"\n            },\n            \"turn_key\": {\n              \"type\": \"string\",\n              \"description\": \"Record field naming the turn (provider formats only).\"\n            },\n            \"step_key\": {\n              \"type\": \"string\",\n              \"description\": \"Record field naming the step (provider formats only).\"\n            },\n            \"usage_key\": {\n              \"type\": \"string\",\n              \"description\": \"Record field holding the usage object (provider formats only).\"\n            }\n          },\n          \"required\": [\n            \"logfile\"\n          ],\n          \"additionalProperties\": false\n        }\n      }\n    },\n    {\n      \"type\": \"function\",\n      \"function\": {\n        \"name\": \"tokenledger_what_if\",\n        \"description\": \"Estimate input tokens saved by removing one step (turn, step) from a log: its own input plus its tool result re-carried into every later step of that turn. Read-only. Returns {turn, step, tokens_saved}. The log file is in the working directory; call the tool directly. Example: {\\\"logfile\\\":\\\"log.jsonl\\\",\\\"turn\\\":1,\\\"step\\\":0}.\",\n        \"parameters\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"logfile\": {\n              \"type\": \"string\",\n              \"description\": \"Path to the JSONL log (relative to the working directory).\"\n            },\n            \"turn\": {\n              \"type\": \"integer\",\n              \"description\": \"Turn number as it appears in the log.\"\n            },\n            \"step\": {\n              \"type\": \"integer\",\n              \"description\": \"Step index within the turn.\"\n            },\n            \"format\": {\n              \"type\": \"string\",\n              \"enum\": [\n                \"native\",\n                \"anthropic\",\n                \"openai\"\n              ],\n              \"default\": \"native\",\n              \"description\": \"Log format.\"\n            },\n            \"turn_key\": {\n              \"type\": \"string\",\n              \"description\": \"Record field naming the turn (provider formats only).\"\n            },\n            \"step_key\": {\n              \"type\": \"string\",\n              \"description\": \"Record field naming the step (provider formats only).\"\n            },\n            \"usage_key\": {\n              \"type\": \"string\",\n              \"description\": \"Record field holding the usage object (provider formats only).\"\n            }\n          },\n          \"required\": [\n            \"logfile\",\n            \"turn\",\n            \"step\"\n          ],\n          \"additionalProperties\": false\n        }\n      }\n    }\n  ],\n  \"mcp\": [\n    {\n      \"name\": \"tokenledger_report\",\n      \"description\": \"Compute the cost-structure report for a JSONL LLM request log: totals, cache-read share, priming share, conversation share, prefix sizes, steps per turn. Read-only. Returns the same object as `tokenledger report LOGFILE --json`. Call it directly: the log file is in the working directory, so never ask the user to paste it and never guess numbers. Only `logfile` is required for a native log; for Anthropic/OpenAI usage logs also pass format (and turn_key/step_key if the records carry `turn`/`step`). Read total_input, total_cache_read, n_turns from the result and quote them as plain digits (61700, not 61,700). A bad log returns isError with {error:{code,message,hint}}: quote `code` exactly (e.g. TL_E_MISSING_FIELD). Examples: {\\\"logfile\\\":\\\"log.jsonl\\\"}; {\\\"logfile\\\":\\\"oa.jsonl\\\",\\\"format\\\":\\\"openai\\\",\\\"turn_key\\\":\\\"turn\\\",\\\"step_key\\\":\\\"step\\\"}; {\\\"logfile\\\":\\\"usage.jsonl\\\",\\\"format\\\":\\\"anthropic\\\"}.\",\n      \"inputSchema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"logfile\": {\n            \"type\": \"string\",\n            \"description\": \"Path to the JSONL log (relative to the working directory).\"\n          },\n          \"format\": {\n            \"type\": \"string\",\n            \"enum\": [\n              \"native\",\n              \"anthropic\",\n              \"openai\"\n            ],\n            \"default\": \"native\",\n            \"description\": \"Log format: native tokenledger fields, or Anthropic/OpenAI usage records.\"\n          },\n          \"turn_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field naming the turn (provider formats only).\"\n          },\n          \"step_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field naming the step (provider formats only).\"\n          },\n          \"usage_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field holding the usage object (provider formats only).\"\n          }\n        },\n        \"required\": [\n          \"logfile\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    {\n      \"name\": \"tokenledger_what_if\",\n      \"description\": \"Estimate input tokens saved by removing one step (turn, step) from a log: its own input plus its tool result re-carried into every later step of that turn. Read-only. Returns {turn, step, tokens_saved}. The log file is in the working directory; call the tool directly. Example: {\\\"logfile\\\":\\\"log.jsonl\\\",\\\"turn\\\":1,\\\"step\\\":0}.\",\n      \"inputSchema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"logfile\": {\n            \"type\": \"string\",\n            \"description\": \"Path to the JSONL log (relative to the working directory).\"\n          },\n          \"turn\": {\n            \"type\": \"integer\",\n            \"description\": \"Turn number as it appears in the log.\"\n          },\n          \"step\": {\n            \"type\": \"integer\",\n            \"description\": \"Step index within the turn.\"\n          },\n          \"format\": {\n            \"type\": \"string\",\n            \"enum\": [\n              \"native\",\n              \"anthropic\",\n              \"openai\"\n            ],\n            \"default\": \"native\",\n            \"description\": \"Log format.\"\n          },\n          \"turn_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field naming the turn (provider formats only).\"\n          },\n          \"step_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field naming the step (provider formats only).\"\n          },\n          \"usage_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field holding the usage object (provider formats only).\"\n          }\n        },\n        \"required\": [\n          \"logfile\",\n          \"turn\",\n          \"step\"\n        ],\n        \"additionalProperties\": false\n      }\n    }\n  ]\n}\n"
+  },
+  {
+   "args": [
+    "describe",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"anthropic\": [\n    {\n      \"name\": \"tokenledger_report\",\n      \"description\": \"Compute the cost-structure report for a JSONL LLM request log: totals, cache-read share, priming share, conversation share, prefix sizes, steps per turn. Read-only. Returns the same object as `tokenledger report LOGFILE --json`. Call it directly: the log file is in the working directory, so never ask the user to paste it and never guess numbers. Only `logfile` is required for a native log; for Anthropic/OpenAI usage logs also pass format (and turn_key/step_key if the records carry `turn`/`step`). Read total_input, total_cache_read, n_turns from the result and quote them as plain digits (61700, not 61,700). A bad log returns isError with {error:{code,message,hint}}: quote `code` exactly (e.g. TL_E_MISSING_FIELD). Examples: {\\\"logfile\\\":\\\"log.jsonl\\\"}; {\\\"logfile\\\":\\\"oa.jsonl\\\",\\\"format\\\":\\\"openai\\\",\\\"turn_key\\\":\\\"turn\\\",\\\"step_key\\\":\\\"step\\\"}; {\\\"logfile\\\":\\\"usage.jsonl\\\",\\\"format\\\":\\\"anthropic\\\"}.\",\n      \"input_schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"logfile\": {\n            \"type\": \"string\",\n            \"description\": \"Path to the JSONL log (relative to the working directory).\"\n          },\n          \"format\": {\n            \"type\": \"string\",\n            \"enum\": [\n              \"native\",\n              \"anthropic\",\n              \"openai\"\n            ],\n            \"default\": \"native\",\n            \"description\": \"Log format: native tokenledger fields, or Anthropic/OpenAI usage records.\"\n          },\n          \"turn_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field naming the turn (provider formats only).\"\n          },\n          \"step_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field naming the step (provider formats only).\"\n          },\n          \"usage_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field holding the usage object (provider formats only).\"\n          }\n        },\n        \"required\": [\n          \"logfile\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    {\n      \"name\": \"tokenledger_what_if\",\n      \"description\": \"Estimate input tokens saved by removing one step (turn, step) from a log: its own input plus its tool result re-carried into every later step of that turn. Read-only. Returns {turn, step, tokens_saved}. The log file is in the working directory; call the tool directly. Example: {\\\"logfile\\\":\\\"log.jsonl\\\",\\\"turn\\\":1,\\\"step\\\":0}.\",\n      \"input_schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"logfile\": {\n            \"type\": \"string\",\n            \"description\": \"Path to the JSONL log (relative to the working directory).\"\n          },\n          \"turn\": {\n            \"type\": \"integer\",\n            \"description\": \"Turn number as it appears in the log.\"\n          },\n          \"step\": {\n            \"type\": \"integer\",\n            \"description\": \"Step index within the turn.\"\n          },\n          \"format\": {\n            \"type\": \"string\",\n            \"enum\": [\n              \"native\",\n              \"anthropic\",\n              \"openai\"\n            ],\n            \"default\": \"native\",\n            \"description\": \"Log format.\"\n          },\n          \"turn_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field naming the turn (provider formats only).\"\n          },\n          \"step_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field naming the step (provider formats only).\"\n          },\n          \"usage_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field holding the usage object (provider formats only).\"\n          }\n        },\n        \"required\": [\n          \"logfile\",\n          \"turn\",\n          \"step\"\n        ],\n        \"additionalProperties\": false\n      }\n    }\n  ],\n  \"openai\": [\n    {\n      \"type\": \"function\",\n      \"function\": {\n        \"name\": \"tokenledger_report\",\n        \"description\": \"Compute the cost-structure report for a JSONL LLM request log: totals, cache-read share, priming share, conversation share, prefix sizes, steps per turn. Read-only. Returns the same object as `tokenledger report LOGFILE --json`. Call it directly: the log file is in the working directory, so never ask the user to paste it and never guess numbers. Only `logfile` is required for a native log; for Anthropic/OpenAI usage logs also pass format (and turn_key/step_key if the records carry `turn`/`step`). Read total_input, total_cache_read, n_turns from the result and quote them as plain digits (61700, not 61,700). A bad log returns isError with {error:{code,message,hint}}: quote `code` exactly (e.g. TL_E_MISSING_FIELD). Examples: {\\\"logfile\\\":\\\"log.jsonl\\\"}; {\\\"logfile\\\":\\\"oa.jsonl\\\",\\\"format\\\":\\\"openai\\\",\\\"turn_key\\\":\\\"turn\\\",\\\"step_key\\\":\\\"step\\\"}; {\\\"logfile\\\":\\\"usage.jsonl\\\",\\\"format\\\":\\\"anthropic\\\"}.\",\n        \"parameters\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"logfile\": {\n              \"type\": \"string\",\n              \"description\": \"Path to the JSONL log (relative to the working directory).\"\n            },\n            \"format\": {\n              \"type\": \"string\",\n              \"enum\": [\n                \"native\",\n                \"anthropic\",\n                \"openai\"\n              ],\n              \"default\": \"native\",\n              \"description\": \"Log format: native tokenledger fields, or Anthropic/OpenAI usage records.\"\n            },\n            \"turn_key\": {\n              \"type\": \"string\",\n              \"description\": \"Record field naming the turn (provider formats only).\"\n            },\n            \"step_key\": {\n              \"type\": \"string\",\n              \"description\": \"Record field naming the step (provider formats only).\"\n            },\n            \"usage_key\": {\n              \"type\": \"string\",\n              \"description\": \"Record field holding the usage object (provider formats only).\"\n            }\n          },\n          \"required\": [\n            \"logfile\"\n          ],\n          \"additionalProperties\": false\n        }\n      }\n    },\n    {\n      \"type\": \"function\",\n      \"function\": {\n        \"name\": \"tokenledger_what_if\",\n        \"description\": \"Estimate input tokens saved by removing one step (turn, step) from a log: its own input plus its tool result re-carried into every later step of that turn. Read-only. Returns {turn, step, tokens_saved}. The log file is in the working directory; call the tool directly. Example: {\\\"logfile\\\":\\\"log.jsonl\\\",\\\"turn\\\":1,\\\"step\\\":0}.\",\n        \"parameters\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"logfile\": {\n              \"type\": \"string\",\n              \"description\": \"Path to the JSONL log (relative to the working directory).\"\n            },\n            \"turn\": {\n              \"type\": \"integer\",\n              \"description\": \"Turn number as it appears in the log.\"\n            },\n            \"step\": {\n              \"type\": \"integer\",\n              \"description\": \"Step index within the turn.\"\n            },\n            \"format\": {\n              \"type\": \"string\",\n              \"enum\": [\n                \"native\",\n                \"anthropic\",\n                \"openai\"\n              ],\n              \"default\": \"native\",\n              \"description\": \"Log format.\"\n            },\n            \"turn_key\": {\n              \"type\": \"string\",\n              \"description\": \"Record field naming the turn (provider formats only).\"\n            },\n            \"step_key\": {\n              \"type\": \"string\",\n              \"description\": \"Record field naming the step (provider formats only).\"\n            },\n            \"usage_key\": {\n              \"type\": \"string\",\n              \"description\": \"Record field holding the usage object (provider formats only).\"\n            }\n          },\n          \"required\": [\n            \"logfile\",\n            \"turn\",\n            \"step\"\n          ],\n          \"additionalProperties\": false\n        }\n      }\n    }\n  ],\n  \"mcp\": [\n    {\n      \"name\": \"tokenledger_report\",\n      \"description\": \"Compute the cost-structure report for a JSONL LLM request log: totals, cache-read share, priming share, conversation share, prefix sizes, steps per turn. Read-only. Returns the same object as `tokenledger report LOGFILE --json`. Call it directly: the log file is in the working directory, so never ask the user to paste it and never guess numbers. Only `logfile` is required for a native log; for Anthropic/OpenAI usage logs also pass format (and turn_key/step_key if the records carry `turn`/`step`). Read total_input, total_cache_read, n_turns from the result and quote them as plain digits (61700, not 61,700). A bad log returns isError with {error:{code,message,hint}}: quote `code` exactly (e.g. TL_E_MISSING_FIELD). Examples: {\\\"logfile\\\":\\\"log.jsonl\\\"}; {\\\"logfile\\\":\\\"oa.jsonl\\\",\\\"format\\\":\\\"openai\\\",\\\"turn_key\\\":\\\"turn\\\",\\\"step_key\\\":\\\"step\\\"}; {\\\"logfile\\\":\\\"usage.jsonl\\\",\\\"format\\\":\\\"anthropic\\\"}.\",\n      \"inputSchema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"logfile\": {\n            \"type\": \"string\",\n            \"description\": \"Path to the JSONL log (relative to the working directory).\"\n          },\n          \"format\": {\n            \"type\": \"string\",\n            \"enum\": [\n              \"native\",\n              \"anthropic\",\n              \"openai\"\n            ],\n            \"default\": \"native\",\n            \"description\": \"Log format: native tokenledger fields, or Anthropic/OpenAI usage records.\"\n          },\n          \"turn_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field naming the turn (provider formats only).\"\n          },\n          \"step_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field naming the step (provider formats only).\"\n          },\n          \"usage_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field holding the usage object (provider formats only).\"\n          }\n        },\n        \"required\": [\n          \"logfile\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    {\n      \"name\": \"tokenledger_what_if\",\n      \"description\": \"Estimate input tokens saved by removing one step (turn, step) from a log: its own input plus its tool result re-carried into every later step of that turn. Read-only. Returns {turn, step, tokens_saved}. The log file is in the working directory; call the tool directly. Example: {\\\"logfile\\\":\\\"log.jsonl\\\",\\\"turn\\\":1,\\\"step\\\":0}.\",\n      \"inputSchema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"logfile\": {\n            \"type\": \"string\",\n            \"description\": \"Path to the JSONL log (relative to the working directory).\"\n          },\n          \"turn\": {\n            \"type\": \"integer\",\n            \"description\": \"Turn number as it appears in the log.\"\n          },\n          \"step\": {\n            \"type\": \"integer\",\n            \"description\": \"Step index within the turn.\"\n          },\n          \"format\": {\n            \"type\": \"string\",\n            \"enum\": [\n              \"native\",\n              \"anthropic\",\n              \"openai\"\n            ],\n            \"default\": \"native\",\n            \"description\": \"Log format.\"\n          },\n          \"turn_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field naming the turn (provider formats only).\"\n          },\n          \"step_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field naming the step (provider formats only).\"\n          },\n          \"usage_key\": {\n            \"type\": \"string\",\n            \"description\": \"Record field holding the usage object (provider formats only).\"\n          }\n        },\n        \"required\": [\n          \"logfile\",\n          \"turn\",\n          \"step\"\n        ],\n        \"additionalProperties\": false\n      }\n    }\n  ]\n}\n"
+  },
+  {
+   "args": [
+    "describe",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "{\"anthropic\":[{\"name\":\"tokenledger_report\",\"description\":\"Compute the cost-structure report for a JSONL LLM request log: totals, cache-read share, priming share, conversation share, prefix sizes, steps per turn. Read-only. Returns the same object as `tokenledger report LOGFILE --json`. Call it directly: the log file is in the working directory, so never ask the user to paste it and never guess numbers. Only `logfile` is required for a native log; for Anthropic/OpenAI usage logs also pass format (and turn_key/step_key if the records carry `turn`/`step`). Read total_input, total_cache_read, n_turns from the result and quote them as plain digits (61700, not 61,700). A bad log returns isError with {error:{code,message,hint}}: quote `code` exactly (e.g. TL_E_MISSING_FIELD). Examples: {\\\"logfile\\\":\\\"log.jsonl\\\"}; {\\\"logfile\\\":\\\"oa.jsonl\\\",\\\"format\\\":\\\"openai\\\",\\\"turn_key\\\":\\\"turn\\\",\\\"step_key\\\":\\\"step\\\"}; {\\\"logfile\\\":\\\"usage.jsonl\\\",\\\"format\\\":\\\"anthropic\\\"}.\",\"input_schema\":{\"type\":\"object\",\"properties\":{\"logfile\":{\"type\":\"string\",\"description\":\"Path to the JSONL log (relative to the working directory).\"},\"format\":{\"type\":\"string\",\"enum\":[\"native\",\"anthropic\",\"openai\"],\"default\":\"native\",\"description\":\"Log format: native tokenledger fields, or Anthropic/OpenAI usage records.\"},\"turn_key\":{\"type\":\"string\",\"description\":\"Record field naming the turn (provider formats only).\"},\"step_key\":{\"type\":\"string\",\"description\":\"Record field naming the step (provider formats only).\"},\"usage_key\":{\"type\":\"string\",\"description\":\"Record field holding the usage object (provider formats only).\"}},\"required\":[\"logfile\"],\"additionalProperties\":false}},{\"name\":\"tokenledger_what_if\",\"description\":\"Estimate input tokens saved by removing one step (turn, step) from a log: its own input plus its tool result re-carried into every later step of that turn. Read-only. Returns {turn, step, tokens_saved}. The log file is in the working directory; call the tool directly. Example: {\\\"logfile\\\":\\\"log.jsonl\\\",\\\"turn\\\":1,\\\"step\\\":0}.\",\"input_schema\":{\"type\":\"object\",\"properties\":{\"logfile\":{\"type\":\"string\",\"description\":\"Path to the JSONL log (relative to the working directory).\"},\"turn\":{\"type\":\"integer\",\"description\":\"Turn number as it appears in the log.\"},\"step\":{\"type\":\"integer\",\"description\":\"Step index within the turn.\"},\"format\":{\"type\":\"string\",\"enum\":[\"native\",\"anthropic\",\"openai\"],\"default\":\"native\",\"description\":\"Log format.\"},\"turn_key\":{\"type\":\"string\",\"description\":\"Record field naming the turn (provider formats only).\"},\"step_key\":{\"type\":\"string\",\"description\":\"Record field naming the step (provider formats only).\"},\"usage_key\":{\"type\":\"string\",\"description\":\"Record field holding the usage object (provider formats only).\"}},\"required\":[\"logfile\",\"turn\",\"step\"],\"additionalProperties\":false}}],\"openai\":[{\"type\":\"function\",\"function\":{\"name\":\"tokenledger_report\",\"description\":\"Compute the cost-structure report for a JSONL LLM request log: totals, cache-read share, priming share, conversation share, prefix sizes, steps per turn. Read-only. Returns the same object as `tokenledger report LOGFILE --json`. Call it directly: the log file is in the working directory, so never ask the user to paste it and never guess numbers. Only `logfile` is required for a native log; for Anthropic/OpenAI usage logs also pass format (and turn_key/step_key if the records carry `turn`/`step`). Read total_input, total_cache_read, n_turns from the result and quote them as plain digits (61700, not 61,700). A bad log returns isError with {error:{code,message,hint}}: quote `code` exactly (e.g. TL_E_MISSING_FIELD). Examples: {\\\"logfile\\\":\\\"log.jsonl\\\"}; {\\\"logfile\\\":\\\"oa.jsonl\\\",\\\"format\\\":\\\"openai\\\",\\\"turn_key\\\":\\\"turn\\\",\\\"step_key\\\":\\\"step\\\"}; {\\\"logfile\\\":\\\"usage.jsonl\\\",\\\"format\\\":\\\"anthropic\\\"}.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"logfile\":{\"type\":\"string\",\"description\":\"Path to the JSONL log (relative to the working directory).\"},\"format\":{\"type\":\"string\",\"enum\":[\"native\",\"anthropic\",\"openai\"],\"default\":\"native\",\"description\":\"Log format: native tokenledger fields, or Anthropic/OpenAI usage records.\"},\"turn_key\":{\"type\":\"string\",\"description\":\"Record field naming the turn (provider formats only).\"},\"step_key\":{\"type\":\"string\",\"description\":\"Record field naming the step (provider formats only).\"},\"usage_key\":{\"type\":\"string\",\"description\":\"Record field holding the usage object (provider formats only).\"}},\"required\":[\"logfile\"],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"tokenledger_what_if\",\"description\":\"Estimate input tokens saved by removing one step (turn, step) from a log: its own input plus its tool result re-carried into every later step of that turn. Read-only. Returns {turn, step, tokens_saved}. The log file is in the working directory; call the tool directly. Example: {\\\"logfile\\\":\\\"log.jsonl\\\",\\\"turn\\\":1,\\\"step\\\":0}.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"logfile\":{\"type\":\"string\",\"description\":\"Path to the JSONL log (relative to the working directory).\"},\"turn\":{\"type\":\"integer\",\"description\":\"Turn number as it appears in the log.\"},\"step\":{\"type\":\"integer\",\"description\":\"Step index within the turn.\"},\"format\":{\"type\":\"string\",\"enum\":[\"native\",\"anthropic\",\"openai\"],\"default\":\"native\",\"description\":\"Log format.\"},\"turn_key\":{\"type\":\"string\",\"description\":\"Record field naming the turn (provider formats only).\"},\"step_key\":{\"type\":\"string\",\"description\":\"Record field naming the step (provider formats only).\"},\"usage_key\":{\"type\":\"string\",\"description\":\"Record field holding the usage object (provider formats only).\"}},\"required\":[\"logfile\",\"turn\",\"step\"],\"additionalProperties\":false}}}],\"mcp\":[{\"name\":\"tokenledger_report\",\"description\":\"Compute the cost-structure report for a JSONL LLM request log: totals, cache-read share, priming share, conversation share, prefix sizes, steps per turn. Read-only. Returns the same object as `tokenledger report LOGFILE --json`. Call it directly: the log file is in the working directory, so never ask the user to paste it and never guess numbers. Only `logfile` is required for a native log; for Anthropic/OpenAI usage logs also pass format (and turn_key/step_key if the records carry `turn`/`step`). Read total_input, total_cache_read, n_turns from the result and quote them as plain digits (61700, not 61,700). A bad log returns isError with {error:{code,message,hint}}: quote `code` exactly (e.g. TL_E_MISSING_FIELD). Examples: {\\\"logfile\\\":\\\"log.jsonl\\\"}; {\\\"logfile\\\":\\\"oa.jsonl\\\",\\\"format\\\":\\\"openai\\\",\\\"turn_key\\\":\\\"turn\\\",\\\"step_key\\\":\\\"step\\\"}; {\\\"logfile\\\":\\\"usage.jsonl\\\",\\\"format\\\":\\\"anthropic\\\"}.\",\"inputSchema\":{\"type\":\"object\",\"properties\":{\"logfile\":{\"type\":\"string\",\"description\":\"Path to the JSONL log (relative to the working directory).\"},\"format\":{\"type\":\"string\",\"enum\":[\"native\",\"anthropic\",\"openai\"],\"default\":\"native\",\"description\":\"Log format: native tokenledger fields, or Anthropic/OpenAI usage records.\"},\"turn_key\":{\"type\":\"string\",\"description\":\"Record field naming the turn (provider formats only).\"},\"step_key\":{\"type\":\"string\",\"description\":\"Record field naming the step (provider formats only).\"},\"usage_key\":{\"type\":\"string\",\"description\":\"Record field holding the usage object (provider formats only).\"}},\"required\":[\"logfile\"],\"additionalProperties\":false}},{\"name\":\"tokenledger_what_if\",\"description\":\"Estimate input tokens saved by removing one step (turn, step) from a log: its own input plus its tool result re-carried into every later step of that turn. Read-only. Returns {turn, step, tokens_saved}. The log file is in the working directory; call the tool directly. Example: {\\\"logfile\\\":\\\"log.jsonl\\\",\\\"turn\\\":1,\\\"step\\\":0}.\",\"inputSchema\":{\"type\":\"object\",\"properties\":{\"logfile\":{\"type\":\"string\",\"description\":\"Path to the JSONL log (relative to the working directory).\"},\"turn\":{\"type\":\"integer\",\"description\":\"Turn number as it appears in the log.\"},\"step\":{\"type\":\"integer\",\"description\":\"Step index within the turn.\"},\"format\":{\"type\":\"string\",\"enum\":[\"native\",\"anthropic\",\"openai\"],\"default\":\"native\",\"description\":\"Log format.\"},\"turn_key\":{\"type\":\"string\",\"description\":\"Record field naming the turn (provider formats only).\"},\"step_key\":{\"type\":\"string\",\"description\":\"Record field naming the step (provider formats only).\"},\"usage_key\":{\"type\":\"string\",\"description\":\"Record field holding the usage object (provider formats only).\"}},\"required\":[\"logfile\",\"turn\",\"step\"],\"additionalProperties\":false}}]}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "requests=4 turns=2 input=89532 output=505 cache_read_pct=98.8%\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--json",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "{\"n_requests\":4,\"n_turns\":2,\"steps_per_turn\":{\"1\":3,\"2\":1},\"total_input\":89532,\"total_output\":505,\"total_cache_read\":88432,\"cache_read_pct\":0.987713890005808,\"priming_total\":80464,\"priming_pct\":0.8987177768842425,\"conversation_total\":7968,\"conversation_pct\":0.08899611312156547,\"mean_prefix\":22383.0,\"max_prefix\":24000,\"prefix_reread_cost\":88432}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/anthropic.jsonl",
+    "--format",
+    "anthropic",
+    "--json",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "{\"n_requests\":4,\"n_turns\":1,\"steps_per_turn\":{\"1\":4},\"total_input\":89332,\"total_output\":505,\"total_cache_read\":66816,\"cache_read_pct\":0.7479514619621188,\"priming_total\":0,\"priming_pct\":0.0,\"conversation_total\":0,\"conversation_pct\":0.0,\"mean_prefix\":22333.0,\"max_prefix\":24000,\"prefix_reread_cost\":66816}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "1",
+    "--step",
+    "0"
+   ],
+   "exit_code": 0,
+   "stdout": "turn 1 step 0: removing it saves 22,216 input tokens\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "1",
+    "--step",
+    "0",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"turn\": 1,\n  \"step\": 0,\n  \"tokens_saved\": 22216\n}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "1",
+    "--step",
+    "0",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "22216\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "1",
+    "--step",
+    "0",
+    "--json",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "{\"turn\":1,\"step\":0,\"tokens_saved\":22216}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "1",
+    "--step",
+    "1"
+   ],
+   "exit_code": 0,
+   "stdout": "turn 1 step 1: removing it saves 22,916 input tokens\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "1",
+    "--step",
+    "1",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"turn\": 1,\n  \"step\": 1,\n  \"tokens_saved\": 22916\n}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "1",
+    "--step",
+    "1",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "22916\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "1",
+    "--step",
+    "1",
+    "--json",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "{\"turn\":1,\"step\":1,\"tokens_saved\":22916}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "2",
+    "--step",
+    "0"
+   ],
+   "exit_code": 0,
+   "stdout": "turn 2 step 0: removing it saves 24,000 input tokens\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "2",
+    "--step",
+    "0",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"turn\": 2,\n  \"step\": 0,\n  \"tokens_saved\": 24000\n}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "2",
+    "--step",
+    "0",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "24000\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "2",
+    "--step",
+    "0",
+    "--json",
+    "--quiet"
+   ],
+   "exit_code": 0,
+   "stdout": "{\"turn\":2,\"step\":0,\"tokens_saved\":24000}\n"
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/anthropic.jsonl",
+    "--format",
+    "anthropic",
+    "--turn-key",
+    "turn",
+    "--step-key",
+    "step",
+    "--turn",
+    "1",
+    "--step",
+    "0",
+    "--json"
+   ],
+   "exit_code": 0,
+   "stdout": "{\n  \"turn\": 1,\n  \"step\": 0,\n  \"tokens_saved\": 20616\n}\n"
+  },
+  {
+   "args": [
+    "report",
+    "logs/nope.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "error": {
+    "code": "TL_E_FILE_NOT_FOUND",
+    "hint": "Check the path; it is resolved against the current working directory."
+   }
+  },
+  {
+   "args": [
+    "report",
+    "logs/bad_json.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "error": {
+    "code": "TL_E_BAD_JSON",
+    "hint": "Each non-blank line must be one JSON object (JSONL); lines starting with # are skipped."
+   }
+  },
+  {
+   "args": [
+    "report",
+    "logs/missing_field.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "error": {
+    "code": "TL_E_MISSING_FIELD",
+    "hint": "Native logs need turn, step and input_tokens per line; for provider logs pass --format anthropic or openai."
+   }
+  },
+  {
+   "args": [
+    "report",
+    "logs/empty.jsonl",
+    "--json"
+   ],
+   "exit_code": 1,
+   "error": {
+    "code": "TL_E_NO_REQUESTS",
+    "hint": "The log has no records; check the file and the --format value."
+   }
+  },
+  {
+   "args": [
+    "report",
+    "logs/bad_int.jsonl",
+    "--format",
+    "openai",
+    "--json"
+   ],
+   "exit_code": 1,
+   "error": {
+    "code": "TL_E_BAD_VALUE",
+    "hint": "Token counts, turn and step must be non-negative JSON integers (no floats, booleans, strings or NaN/Infinity)."
+   }
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "99",
+    "--step",
+    "0",
+    "--json"
+   ],
+   "exit_code": 1,
+   "error": {
+    "code": "TL_E_STEP_NOT_FOUND",
+    "hint": "Run `tokenledger report LOG --json` and read steps_per_turn for valid turn/step pairs."
+   }
+  },
+  {
+   "args": [
+    "report",
+    "logs/sample.jsonl",
+    "--format",
+    "bogus",
+    "--json"
+   ],
+   "exit_code": 2,
+   "error": {
+    "code": "TL_E_USAGE",
+    "hint": "Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments."
+   }
+  },
+  {
+   "args": [
+    "report",
+    "--json"
+   ],
+   "exit_code": 2,
+   "error": {
+    "code": "TL_E_USAGE",
+    "hint": "Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments."
+   }
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--json"
+   ],
+   "exit_code": 2,
+   "error": {
+    "code": "TL_E_USAGE",
+    "hint": "Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments."
+   }
+  },
+  {
+   "args": [
+    "report",
+    "logs/nope.jsonl"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  },
+  {
+   "args": [
+    "what-if",
+    "logs/sample.jsonl",
+    "--turn",
+    "99",
+    "--step",
+    "0"
+   ],
+   "exit_code": 1,
+   "stdout": ""
+  }
+ ],
+ "mcp": {
+  "input": [
+   {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "initialize",
+    "params": {
+     "protocolVersion": "2025-06-18"
+    }
+   },
+   {
+    "jsonrpc": "2.0",
+    "method": "notifications/initialized"
+   },
+   {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "method": "tools/list"
+   },
+   {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "method": "tools/call",
+    "params": {
+     "name": "tokenledger_report",
+     "arguments": {
+      "logfile": "logs/sample.jsonl"
+     }
+    }
+   },
+   {
+    "jsonrpc": "2.0",
+    "id": 4,
+    "method": "tools/call",
+    "params": {
+     "name": "tokenledger_what_if",
+     "arguments": {
+      "logfile": "logs/sample.jsonl",
+      "turn": 1,
+      "step": 0
+     }
+    }
+   },
+   {
+    "jsonrpc": "2.0",
+    "id": 5,
+    "method": "tools/call",
+    "params": {
+     "name": "tokenledger_what_if",
+     "arguments": {
+      "logfile": "logs/sample.jsonl",
+      "turn": 9,
+      "step": 9
+     }
+    }
+   },
+   {
+    "jsonrpc": "2.0",
+    "id": 6,
+    "method": "tools/call",
+    "params": {
+     "name": "tokenledger_report",
+     "arguments": {
+      "logfile": "logs/nope.jsonl"
+     }
+    }
+   },
+   {
+    "jsonrpc": "2.0",
+    "id": 7,
+    "method": "tools/call",
+    "params": {
+     "name": "nope",
+     "arguments": {}
+    }
+   },
+   {
+    "jsonrpc": "2.0",
+    "id": 8,
+    "method": "bogus/method"
+   },
+   {
+    "jsonrpc": "2.0",
+    "id": 9,
+    "method": "ping"
+   }
+  ],
+  "output": [
+   {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+     "protocolVersion": "2025-06-18",
+     "capabilities": {
+      "tools": {}
+     },
+     "serverInfo": {
+      "name": "tokenledger",
+      "version": "0.2.0"
+     }
+    }
+   },
+   {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "result": {
+     "tools": [
+      {
+       "name": "tokenledger_report",
+       "description": "Compute the cost-structure report for a JSONL LLM request log: totals, cache-read share, priming share, conversation share, prefix sizes, steps per turn. Read-only. Returns the same object as `tokenledger report LOGFILE --json`. Call it directly: the log file is in the working directory, so never ask the user to paste it and never guess numbers. Only `logfile` is required for a native log; for Anthropic/OpenAI usage logs also pass format (and turn_key/step_key if the records carry `turn`/`step`). Read total_input, total_cache_read, n_turns from the result and quote them as plain digits (61700, not 61,700). A bad log returns isError with {error:{code,message,hint}}: quote `code` exactly (e.g. TL_E_MISSING_FIELD). Examples: {\"logfile\":\"log.jsonl\"}; {\"logfile\":\"oa.jsonl\",\"format\":\"openai\",\"turn_key\":\"turn\",\"step_key\":\"step\"}; {\"logfile\":\"usage.jsonl\",\"format\":\"anthropic\"}.",
+       "inputSchema": {
+        "type": "object",
+        "properties": {
+         "logfile": {
+          "type": "string",
+          "description": "Path to the JSONL log (relative to the working directory)."
+         },
+         "format": {
+          "type": "string",
+          "enum": [
+           "native",
+           "anthropic",
+           "openai"
+          ],
+          "default": "native",
+          "description": "Log format: native tokenledger fields, or Anthropic/OpenAI usage records."
+         },
+         "turn_key": {
+          "type": "string",
+          "description": "Record field naming the turn (provider formats only)."
+         },
+         "step_key": {
+          "type": "string",
+          "description": "Record field naming the step (provider formats only)."
+         },
+         "usage_key": {
+          "type": "string",
+          "description": "Record field holding the usage object (provider formats only)."
+         }
+        },
+        "required": [
+         "logfile"
+        ],
+        "additionalProperties": false
+       }
+      },
+      {
+       "name": "tokenledger_what_if",
+       "description": "Estimate input tokens saved by removing one step (turn, step) from a log: its own input plus its tool result re-carried into every later step of that turn. Read-only. Returns {turn, step, tokens_saved}. The log file is in the working directory; call the tool directly. Example: {\"logfile\":\"log.jsonl\",\"turn\":1,\"step\":0}.",
+       "inputSchema": {
+        "type": "object",
+        "properties": {
+         "logfile": {
+          "type": "string",
+          "description": "Path to the JSONL log (relative to the working directory)."
+         },
+         "turn": {
+          "type": "integer",
+          "description": "Turn number as it appears in the log."
+         },
+         "step": {
+          "type": "integer",
+          "description": "Step index within the turn."
+         },
+         "format": {
+          "type": "string",
+          "enum": [
+           "native",
+           "anthropic",
+           "openai"
+          ],
+          "default": "native",
+          "description": "Log format."
+         },
+         "turn_key": {
+          "type": "string",
+          "description": "Record field naming the turn (provider formats only)."
+         },
+         "step_key": {
+          "type": "string",
+          "description": "Record field naming the step (provider formats only)."
+         },
+         "usage_key": {
+          "type": "string",
+          "description": "Record field holding the usage object (provider formats only)."
+         }
+        },
+        "required": [
+         "logfile",
+         "turn",
+         "step"
+        ],
+        "additionalProperties": false
+       }
+      }
+     ]
+    }
+   },
+   {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "result": {
+     "content": [
+      {
+       "type": "text",
+       "text": "{\"n_requests\":4,\"n_turns\":2,\"steps_per_turn\":{\"1\":3,\"2\":1},\"total_input\":89532,\"total_output\":505,\"total_cache_read\":88432,\"cache_read_pct\":0.987713890005808,\"priming_total\":80464,\"priming_pct\":0.8987177768842425,\"conversation_total\":7968,\"conversation_pct\":0.08899611312156547,\"mean_prefix\":22383.0,\"max_prefix\":24000,\"prefix_reread_cost\":88432}"
+      }
+     ],
+     "structuredContent": {
+      "n_requests": 4,
+      "n_turns": 2,
+      "steps_per_turn": {
+       "1": 3,
+       "2": 1
+      },
+      "total_input": 89532,
+      "total_output": 505,
+      "total_cache_read": 88432,
+      "cache_read_pct": 0.987713890005808,
+      "priming_total": 80464,
+      "priming_pct": 0.8987177768842425,
+      "conversation_total": 7968,
+      "conversation_pct": 0.08899611312156547,
+      "mean_prefix": 22383.0,
+      "max_prefix": 24000,
+      "prefix_reread_cost": 88432
+     },
+     "isError": false
+    }
+   },
+   {
+    "jsonrpc": "2.0",
+    "id": 4,
+    "result": {
+     "content": [
+      {
+       "type": "text",
+       "text": "{\"turn\":1,\"step\":0,\"tokens_saved\":22216}"
+      }
+     ],
+     "structuredContent": {
+      "turn": 1,
+      "step": 0,
+      "tokens_saved": 22216
+     },
+     "isError": false
+    }
+   },
+   {
+    "jsonrpc": "2.0",
+    "id": 5,
+    "result": {
+     "content": [
+      {
+       "type": "text",
+       "text": "{\"error\":{\"code\":\"TL_E_STEP_NOT_FOUND\",\"message\":\"no step 9 in turn 9\",\"hint\":\"Run `tokenledger report LOG --json` and read steps_per_turn for valid turn/step pairs.\"}}"
+      }
+     ],
+     "structuredContent": {
+      "error": {
+       "code": "TL_E_STEP_NOT_FOUND",
+       "message": "<impl>",
+       "hint": "Run `tokenledger report LOG --json` and read steps_per_turn for valid turn/step pairs."
+      }
+     },
+     "isError": true
+    }
+   },
+   {
+    "jsonrpc": "2.0",
+    "id": 6,
+    "result": {
+     "content": [
+      {
+       "type": "text",
+       "text": "{\"error\":{\"code\":\"TL_E_FILE_NOT_FOUND\",\"message\":\"No such file or directory: 'logs/nope.jsonl'\",\"hint\":\"Check the path; it is resolved against the current working directory.\"}}"
+      }
+     ],
+     "structuredContent": {
+      "error": {
+       "code": "TL_E_FILE_NOT_FOUND",
+       "message": "<impl>",
+       "hint": "Check the path; it is resolved against the current working directory."
+      }
+     },
+     "isError": true
+    }
+   },
+   {
+    "jsonrpc": "2.0",
+    "id": 7,
+    "result": {
+     "content": [
+      {
+       "type": "text",
+       "text": "{\"error\":{\"code\":\"TL_E_USAGE\",\"message\":\"unknown tool 'nope'; expected one of tokenledger_report, tokenledger_what_if\",\"hint\":\"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"}}"
+      }
+     ],
+     "structuredContent": {
+      "error": {
+       "code": "TL_E_USAGE",
+       "message": "<impl>",
+       "hint": "Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments."
+      }
+     },
+     "isError": true
+    }
+   },
+   {
+    "jsonrpc": "2.0",
+    "id": 8,
+    "error": {
+     "code": -32601,
+     "message": "Method not found: bogus/method"
+    }
+   },
+   {
+    "jsonrpc": "2.0",
+    "id": 9,
+    "result": {}
+   }
+  ],
+  "extra_input": [
+   "{\"jsonrpc\": \"2.0\", \"id\": 10, \"method\": \"tools/call\", \"params\": {\"name\": \"tokenledger_report\", \"arguments\": {\"logfile\": \"logs/big_ints.jsonl\"}}}",
+   "{\"jsonrpc\": \"2.0\", \"id\": 11, \"method\": \"tools/call\", \"params\": {\"name\": \"tokenledger_what_if\", \"arguments\": {\"logfile\": \"logs/big_ints.jsonl\", \"turn\": 18446744073709551616, \"step\": 0}}}",
+   "{\"jsonrpc\": \"2.0\", \"id\": 1.0, \"method\": \"ping\"}",
+   "{\"jsonrpc\": \"2.0\", \"id\": 12345678901234567890123, \"method\": \"ping\"}",
+   "{\"jsonrpc\": \"2.0\", \"id\": 14, \"method\": \"ping\", \"params\": {\"x\": NaN}}",
+   "{bad json",
+   " {\"jsonrpc\": \"2.0\", \"id\": 16, \"method\": \"ping\"}　",
+   "{\"jsonrpc\": \"2.0\", \"id\": 17, \"method\": \"tools/call\", \"params\": {\"name\": \"tokenledger_what_if\", \"arguments\": {\"logfile\": \"logs/sample.jsonl\", \"turn\": 1.0, \"step\": 0}}}",
+   "{\"jsonrpc\": \"2.0\", \"id\": 18, \"method\": \"tools/call\", \"params\": {\"name\": \"tokenledger_what_if\", \"arguments\": {\"logfile\": \"logs/sample.jsonl\", \"turn\": true, \"step\": 0}}}",
+   "{\"jsonrpc\": \"2.0\", \"id\": 19, \"method\": \"tools/call\", \"params\": {\"name\": \"tokenledger_report\", \"arguments\": {\"logfile\": \"logs/float_tokens.jsonl\"}}}"
+  ],
+  "extra_output": [
+   "{\"jsonrpc\":\"2.0\",\"id\":10,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"n_requests\\\":3,\\\"n_turns\\\":2,\\\"steps_per_turn\\\":{\\\"1\\\":2,\\\"18446744073709551616\\\":1},\\\"total_input\\\":123456789012363693299744049882,\\\"total_output\\\":18014398509481993,\\\"total_cache_read\\\":100000000000018014398509481985,\\\"cache_read_pct\\\":0.8100000072900277,\\\"priming_total\\\":18014398509481985,\\\"priming_pct\\\":1.4591662924003244e-13,\\\"conversation_total\\\":4,\\\"conversation_pct\\\":3.2400000291595275e-29,\\\"mean_prefix\\\":4.115226300412123e+28,\\\"max_prefix\\\":123456789012345678901234567890,\\\"prefix_reread_cost\\\":100000000000018014398509481985}\"}],\"structuredContent\":{\"n_requests\":3,\"n_turns\":2,\"steps_per_turn\":{\"1\":2,\"18446744073709551616\":1},\"total_input\":123456789012363693299744049882,\"total_output\":18014398509481993,\"total_cache_read\":100000000000018014398509481985,\"cache_read_pct\":0.8100000072900277,\"priming_total\":18014398509481985,\"priming_pct\":1.4591662924003244e-13,\"conversation_total\":4,\"conversation_pct\":3.2400000291595275e-29,\"mean_prefix\":4.115226300412123e+28,\"max_prefix\":123456789012345678901234567890,\"prefix_reread_cost\":100000000000018014398509481985},\"isError\":false}}",
+   "{\"jsonrpc\":\"2.0\",\"id\":11,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"turn\\\":18446744073709551616,\\\"step\\\":0,\\\"tokens_saved\\\":123456789012345678901234567890}\"}],\"structuredContent\":{\"turn\":18446744073709551616,\"step\":0,\"tokens_saved\":123456789012345678901234567890},\"isError\":false}}",
+   "{\"jsonrpc\":\"2.0\",\"id\":1.0,\"result\":{}}",
+   "{\"jsonrpc\":\"2.0\",\"id\":12345678901234567890123,\"result\":{}}",
+   "{\"jsonrpc\":\"2.0\",\"id\":null,\"error\":{\"code\":-32700,\"message\":\"Parse error\"}}",
+   "{\"jsonrpc\":\"2.0\",\"id\":null,\"error\":{\"code\":-32700,\"message\":\"Parse error\"}}",
+   "{\"jsonrpc\":\"2.0\",\"id\":16,\"result\":{}}",
+   "{\"jsonrpc\":\"2.0\",\"id\":17,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"error\\\":{\\\"code\\\":\\\"TL_E_USAGE\\\",\\\"message\\\":\\\"argument 'turn' is required and must be an integer\\\",\\\"hint\\\":\\\"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\\\"}}\"}],\"structuredContent\":{\"error\":{\"code\":\"TL_E_USAGE\",\"message\":\"argument 'turn' is required and must be an integer\",\"hint\":\"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"}},\"isError\":true}}",
+   "{\"jsonrpc\":\"2.0\",\"id\":18,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"error\\\":{\\\"code\\\":\\\"TL_E_USAGE\\\",\\\"message\\\":\\\"argument 'turn' is required and must be an integer\\\",\\\"hint\\\":\\\"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\\\"}}\"}],\"structuredContent\":{\"error\":{\"code\":\"TL_E_USAGE\",\"message\":\"argument 'turn' is required and must be an integer\",\"hint\":\"Run `tokenledger describe --json` or `tokenledger --help` for the exact arguments.\"}},\"isError\":true}}",
+   "{\"jsonrpc\":\"2.0\",\"id\":19,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"{\\\"error\\\":{\\\"code\\\":\\\"TL_E_BAD_VALUE\\\",\\\"message\\\":\\\"field 'input_tokens' must be a non-negative integer (JSON integer, not float/bool/string), got 1.5\\\",\\\"hint\\\":\\\"Token counts, turn and step must be non-negative JSON integers (no floats, booleans, strings or NaN/Infinity).\\\"}}\"}],\"structuredContent\":{\"error\":{\"code\":\"TL_E_BAD_VALUE\",\"message\":\"field 'input_tokens' must be a non-negative integer (JSON integer, not float/bool/string), got 1.5\",\"hint\":\"Token counts, turn and step must be non-negative JSON integers (no floats, booleans, strings or NaN/Infinity).\"}},\"isError\":true}}"
+  ]
+ }
+}

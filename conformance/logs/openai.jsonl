@@ -1,0 +1,7 @@
+# synthetic OpenAI Chat Completions usage log (NOT real data)
+# note: usage.prompt_tokens is ALREADY the total input; cached portion is in
+# prompt_tokens_details.cached_tokens.
+{"turn": 1, "step": 0, "usage": {"prompt_tokens": 20616, "completion_tokens": 120, "total_tokens": 20736, "prompt_tokens_details": {"cached_tokens": 20116}}}
+{"turn": 1, "step": 1, "usage": {"prompt_tokens": 21716, "completion_tokens": 95, "total_tokens": 21811, "prompt_tokens_details": {"cached_tokens": 21516}}}
+{"turn": 1, "step": 2, "usage": {"prompt_tokens": 23200, "completion_tokens": 210, "total_tokens": 23410, "prompt_tokens_details": {"cached_tokens": 23000}}}
+{"turn": 2, "step": 0, "usage": {"prompt_tokens": 24000, "completion_tokens": 80, "total_tokens": 24080, "prompt_tokens_details": {"cached_tokens": 23800}}}

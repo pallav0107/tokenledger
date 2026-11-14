@@ -1,0 +1,20 @@
+{
+ "id": "anthropic_usage_log",
+ "prompt": "usage.jsonl holds Anthropic API usage records (one per request). What is the true total input tokens across all requests, counting cached input? Use the tool.",
+ "fixtures": {
+  "usage.jsonl": "{\"turn\":1,\"step\":0,\"usage\":{\"input_tokens\":500,\"cache_creation_input_tokens\":9500,\"cache_read_input_tokens\":0,\"output_tokens\":80}}\n{\"turn\":1,\"step\":1,\"usage\":{\"input_tokens\":300,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":10000,\"output_tokens\":60}}\n"
+ },
+ "expect": {
+  "tool_called": "tokenledger_report",
+  "args_subset": {
+   "logfile": "usage.jsonl",
+   "format": "anthropic"
+  },
+  "answer_contains": [
+   [
+    "20300",
+    "20,300"
+   ]
+  ]
+ }
+}

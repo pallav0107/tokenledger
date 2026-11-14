@@ -1,0 +1,6 @@
+# synthetic: mean prefix lands exactly on .5 (round-half-even), tiny and large percentages
+{"turn": 2, "step": 1, "input_tokens": 1000001, "cache_read_tokens": 3, "priming_tokens": 1, "conversation_tokens": 2, "tool_result_tokens": 5, "output_tokens": 7, "label": "b"}
+{"turn": 1, "step": 0, "input_tokens": 2, "cache_read_tokens": 0}
+
+{"turn": 1, "step": 1, "input_tokens": 2, "cache_read_tokens": 1, "priming_tokens": 0, "conversation_tokens": 0, "tool_result_tokens": 9}
+{"turn": 10, "step": 0, "input_tokens": 1, "cache_read_tokens": 1, "output_tokens": 1}

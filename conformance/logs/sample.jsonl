@@ -1,0 +1,5 @@
+# synthetic sample log (NOT real workload data) — illustrates the cost structure
+{"turn": 1, "step": 0, "input_tokens": 20616, "cache_read_tokens": 20116, "priming_tokens": 20116, "conversation_tokens": 0, "tool_result_tokens": 800, "output_tokens": 120, "label": "plan"}
+{"turn": 1, "step": 1, "input_tokens": 21716, "cache_read_tokens": 21516, "priming_tokens": 20116, "conversation_tokens": 1400, "tool_result_tokens": 1200, "output_tokens": 95, "label": "read file"}
+{"turn": 1, "step": 2, "input_tokens": 23200, "cache_read_tokens": 23000, "priming_tokens": 20116, "conversation_tokens": 2884, "tool_result_tokens": 300, "output_tokens": 210, "label": "edit"}
+{"turn": 2, "step": 0, "input_tokens": 24000, "cache_read_tokens": 23800, "priming_tokens": 20116, "conversation_tokens": 3684, "tool_result_tokens": 150, "output_tokens": 80, "label": "verify"}

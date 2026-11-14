@@ -1,0 +1,23 @@
+{
+ "id": "cost_report_json",
+ "prompt": "Use the tokenledger tool on log.jsonl (native format). What are total_input and total_cache_read? Give both numbers.",
+ "fixtures": {
+  "log.jsonl": "{\"turn\":1,\"step\":0,\"input_tokens\":20000,\"cache_read_tokens\":0,\"priming_tokens\":20000,\"tool_result_tokens\":3000,\"output_tokens\":100}\n{\"turn\":1,\"step\":1,\"input_tokens\":20500,\"cache_read_tokens\":20000,\"priming_tokens\":20000,\"conversation_tokens\":500,\"output_tokens\":200}\n{\"turn\":1,\"step\":2,\"input_tokens\":21200,\"cache_read_tokens\":20500,\"priming_tokens\":20000,\"conversation_tokens\":1200,\"output_tokens\":50}\n"
+ },
+ "expect": {
+  "tool_called": "tokenledger_report",
+  "args_subset": {
+   "logfile": "log.jsonl"
+  },
+  "answer_contains": [
+   [
+    "61700",
+    "61,700"
+   ],
+   [
+    "40500",
+    "40,500"
+   ]
+  ]
+ }
+}

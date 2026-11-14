@@ -1,0 +1,4 @@
+# synthetic: top-level usage fields, no turn/step keys, missing cache details
+{"prompt_tokens": 1000, "completion_tokens": 20, "prompt_tokens_details": {"cached_tokens": 800}, "label": "a"}
+{"prompt_tokens": 1500, "completion_tokens": 30, "prompt_tokens_details": null}
+{"usage": {"prompt_tokens": 2000, "completion_tokens": 40, "prompt_tokens_details": {"cached_tokens": 1900}}}

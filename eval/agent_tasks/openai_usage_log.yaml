@@ -1,0 +1,22 @@
+{
+ "id": "openai_usage_log",
+ "prompt": "oa.jsonl holds OpenAI usage records with turn and step fields named turn and step. What is the total input (prompt) token count and how many turns are there?",
+ "fixtures": {
+  "oa.jsonl": "{\"turn\":1,\"step\":0,\"usage\":{\"prompt_tokens\":1000,\"completion_tokens\":50,\"prompt_tokens_details\":{\"cached_tokens\":0}}}\n{\"turn\":1,\"step\":1,\"usage\":{\"prompt_tokens\":1100,\"completion_tokens\":50,\"prompt_tokens_details\":{\"cached_tokens\":1000}}}\n{\"turn\":2,\"step\":0,\"usage\":{\"prompt_tokens\":1000,\"completion_tokens\":50,\"prompt_tokens_details\":{\"cached_tokens\":0}}}\n{\"turn\":2,\"step\":1,\"usage\":{\"prompt_tokens\":1200,\"completion_tokens\":50,\"prompt_tokens_details\":{\"cached_tokens\":1000}}}\n"
+ },
+ "expect": {
+  "tool_called": "tokenledger_report",
+  "args_subset": {
+   "logfile": "oa.jsonl",
+   "format": "openai",
+    "turn_key": "turn",
+    "step_key": "step"
+  },
+  "answer_contains": [
+   [
+    "4300",
+    "4,300"
+   ]
+  ]
+ }
+}

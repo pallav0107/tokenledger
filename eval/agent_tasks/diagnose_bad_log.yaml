@@ -1,0 +1,17 @@
+{
+ "id": "diagnose_bad_log",
+ "prompt": "Run the tool on bad.jsonl (native format) and tell me the exact error code it returns.",
+ "fixtures": {
+  "bad.jsonl": "{\"turn\":1,\"step\":0,\"input_tokens\":100}\n{\"turn\":1,\"input_tokens\":200}\n"
+ },
+ "expect": {
+  "tool_called": "tokenledger_report",
+  "args_subset": {
+   "logfile": "bad.jsonl"
+  },
+  "allow_error": true,
+  "answer_contains": [
+   "TL_E_MISSING_FIELD"
+  ]
+ }
+}

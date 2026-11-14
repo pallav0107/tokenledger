@@ -8,7 +8,7 @@ doesn't — it scales with **(context size × number of requests)**, because alm
 priming *and* its tool result get re-carried into every later step. `tokenledger` reads your request
 logs and shows you exactly that, so you optimize the right thing.
 
-> Status: **v0.1 — early scaffold, feedback very welcome.** Author: Pallav Pokhriyal.
+> Status: **v0.2 — beta, feedback very welcome.** Author: Pallav Pokhriyal.
 > Zero dependencies, zero telemetry. It reads logs you already have.
 
 ## Install
@@ -61,6 +61,12 @@ Everything else is optional and defaults to 0:
 | `tool_result_tokens` | tokens this step emitted as tool output (carried forward) |
 | `output_tokens` | completion tokens |
 
+Every count (and `turn` / `step`) must be a **non-negative JSON integer**: floats (`1.0`, `1e3`), booleans,
+strings and negative numbers fail with `TL_E_BAD_VALUE` (exit 1), `NaN`/`Infinity` with `TL_E_BAD_JSON`, and
+non-UTF-8 files with `TL_E_BAD_ENCODING`. A UTF-8 BOM, CRLF and lone-CR line endings are accepted, and totals
+stay exact beyond 2^53 (Python ints; the JavaScript library API instead throws `TL_E_OVERFLOW` above 2^53-1, while its CLI stays exact). The full rules, shared with the JavaScript port, are in [docs/SPEC.md](https://github.com/pallav0107/tokenledger/blob/main/docs/SPEC.md);
+behaviour changes since 0.1.1 are in [CHANGELOG.md](https://github.com/pallav0107/tokenledger/blob/main/CHANGELOG.md).
+
 Have a different log shape? Map it:
 ```python
 from tokenledger import load_requests, account
@@ -101,6 +107,12 @@ print(what_if_remove_step(reqs, turn=1, step=0))  # tokens saved by removing an 
 ```
 Removing an **early** step saves more than a late one — it drops that step's own cost *and* its
 tool result from every later step. That's the superlinearity, made concrete.
+
+## For AI agents
+
+`AGENTS.md` and `llms.txt` ship in the package. `tokenledger describe --json` prints tool definitions
+(Anthropic, OpenAI, MCP), `tokenledger mcp` runs an MCP server on stdio, `--json` / `--quiet` work on every
+command, and errors are `{code, message, hint}` objects. JSON Schemas for every output are in `schemas/`.
 
 ## Why it exists
 See [`docs/METHODOLOGY.md`](https://github.com/pallav0107/tokenledger/blob/main/docs/METHODOLOGY.md) for the measured findings this operationalizes.

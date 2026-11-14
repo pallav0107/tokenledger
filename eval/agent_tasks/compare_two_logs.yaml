@@ -1,0 +1,30 @@
+{
+ "id": "compare_two_logs",
+ "prompt": "before.jsonl and after.jsonl are logs from the same agent before and after a change. By how many total input tokens did the change reduce input? Use the tool on both files.",
+ "fixtures": {
+  "before.jsonl": "{\"turn\":1,\"step\":0,\"input_tokens\":20000,\"cache_read_tokens\":0,\"priming_tokens\":20000,\"tool_result_tokens\":3000,\"output_tokens\":100}\n{\"turn\":1,\"step\":1,\"input_tokens\":20500,\"cache_read_tokens\":20000,\"priming_tokens\":20000,\"conversation_tokens\":500,\"output_tokens\":200}\n{\"turn\":1,\"step\":2,\"input_tokens\":21200,\"cache_read_tokens\":20500,\"priming_tokens\":20000,\"conversation_tokens\":1200,\"output_tokens\":50}\n",
+  "after.jsonl": "{\"turn\":1,\"step\":0,\"input_tokens\":20000,\"cache_read_tokens\":0,\"priming_tokens\":20000,\"output_tokens\":100}\n{\"turn\":1,\"step\":1,\"input_tokens\":20700,\"cache_read_tokens\":20000,\"priming_tokens\":20000,\"conversation_tokens\":700,\"output_tokens\":200}\n"
+ },
+ "expect": {
+  "tool_calls": [
+   {
+    "name": "tokenledger_report",
+    "args_subset": {
+     "logfile": "before.jsonl"
+    }
+   },
+   {
+    "name": "tokenledger_report",
+    "args_subset": {
+     "logfile": "after.jsonl"
+    }
+   }
+  ],
+  "answer_contains": [
+   [
+    "21000",
+    "21,000"
+   ]
+  ]
+ }
+}

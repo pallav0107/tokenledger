@@ -1,0 +1,54 @@
+{
+  "tools": [
+    {
+      "name": "tokenledger_report",
+      "description": "Compute the cost-structure report for a JSONL LLM request log: totals, cache-read share, priming share, conversation share, prefix sizes, steps per turn. Read-only. Returns the same object as `tokenledger report LOGFILE --json`. Call it directly: the log file is in the working directory, so never ask the user to paste it and never guess numbers. Only `logfile` is required for a native log; for Anthropic/OpenAI usage logs also pass format (and turn_key/step_key if the records carry `turn`/`step`). Read total_input, total_cache_read, n_turns from the result and quote them as plain digits (61700, not 61,700). A bad log returns isError with {error:{code,message,hint}}: quote `code` exactly (e.g. TL_E_MISSING_FIELD). Examples: {\"logfile\":\"log.jsonl\"}; {\"logfile\":\"oa.jsonl\",\"format\":\"openai\",\"turn_key\":\"turn\",\"step_key\":\"step\"}; {\"logfile\":\"usage.jsonl\",\"format\":\"anthropic\"}.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "logfile": {"type": "string", "description": "Path to the JSONL log (relative to the working directory)."},
+          "format": {"type": "string", "enum": ["native", "anthropic", "openai"], "default": "native", "description": "Log format: native tokenledger fields, or Anthropic/OpenAI usage records."},
+          "turn_key": {"type": "string", "description": "Record field naming the turn (provider formats only)."},
+          "step_key": {"type": "string", "description": "Record field naming the step (provider formats only)."},
+          "usage_key": {"type": "string", "description": "Record field holding the usage object (provider formats only)."}
+        },
+        "required": ["logfile"],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "tokenledger_what_if",
+      "description": "Estimate input tokens saved by removing one step (turn, step) from a log: its own input plus its tool result re-carried into every later step of that turn. Read-only. Returns {turn, step, tokens_saved}. The log file is in the working directory; call the tool directly. Example: {\"logfile\":\"log.jsonl\",\"turn\":1,\"step\":0}.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "logfile": {"type": "string", "description": "Path to the JSONL log (relative to the working directory)."},
+          "turn": {"type": "integer", "description": "Turn number as it appears in the log."},
+          "step": {"type": "integer", "description": "Step index within the turn."},
+          "format": {"type": "string", "enum": ["native", "anthropic", "openai"], "default": "native", "description": "Log format."},
+          "turn_key": {"type": "string", "description": "Record field naming the turn (provider formats only)."},
+          "step_key": {"type": "string", "description": "Record field naming the step (provider formats only)."},
+          "usage_key": {"type": "string", "description": "Record field holding the usage object (provider formats only)."}
+        },
+        "required": ["logfile", "turn", "step"],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "cli": {
+    "help": {
+      "main": "usage: tokenledger [-h] {report,what-if,describe,mcp} ...\n\nMeasure the cost structure of multi-agent LLM systems from request logs.\n\npositional arguments:\n  {report,what-if,describe,mcp}\n    report              print a cost-structure report for a JSONL log\n    what-if             input tokens saved by removing one (turn, step)\n    describe            print tool definitions (Anthropic, OpenAI, MCP) as\n                        JSON\n    mcp                 run an MCP server on stdio exposing the tools\n\noptions:\n  -h, --help            show this help message and exit\n",
+      "report": "usage: tokenledger report [-h] [--json] [--quiet]\n                          [--format {native,anthropic,openai}]\n                          [--turn-key TURN_KEY] [--step-key STEP_KEY]\n                          [--usage-key USAGE_KEY]\n                          logfile\n\npositional arguments:\n  logfile               path to a JSONL request log\n\noptions:\n  -h, --help            show this help message and exit\n  --json                emit JSON instead of text\n  --quiet               compact output (one line / minimal JSON)\n  --format {native,anthropic,openai}\n                        log format: 'native' tokenledger fields (default), or\n                        a provider usage log\n  --turn-key TURN_KEY   record field naming the turn (provider formats)\n  --step-key STEP_KEY   record field naming the step (provider formats)\n  --usage-key USAGE_KEY\n                        record field holding the usage sub-object (default:\n                        'usage' if present, else top level)\n",
+      "what-if": "usage: tokenledger what-if [-h] [--json] [--quiet]\n                           [--format {native,anthropic,openai}]\n                           [--turn-key TURN_KEY] [--step-key STEP_KEY]\n                           [--usage-key USAGE_KEY] --turn TURN --step STEP\n                           logfile\n\npositional arguments:\n  logfile               path to a JSONL request log\n\noptions:\n  -h, --help            show this help message and exit\n  --json                emit JSON instead of text\n  --quiet               compact output (one line / minimal JSON)\n  --format {native,anthropic,openai}\n                        log format: 'native' tokenledger fields (default), or\n                        a provider usage log\n  --turn-key TURN_KEY   record field naming the turn (provider formats)\n  --step-key STEP_KEY   record field naming the step (provider formats)\n  --usage-key USAGE_KEY\n                        record field holding the usage sub-object (default:\n                        'usage' if present, else top level)\n  --turn TURN           turn number as in the log\n  --step STEP           step index within the turn\n",
+      "describe": "usage: tokenledger describe [-h] [--json] [--quiet]\n\noptions:\n  -h, --help  show this help message and exit\n  --json      accepted for uniformity; output is always JSON\n  --quiet     compact JSON\n",
+      "mcp": "usage: tokenledger mcp [-h]\n\noptions:\n  -h, --help  show this help message and exit\n"
+    },
+    "usage": {
+      "main": "usage: tokenledger [-h] {report,what-if,describe,mcp} ...\n",
+      "report": "usage: tokenledger report [-h] [--json] [--quiet]\n                          [--format {native,anthropic,openai}]\n                          [--turn-key TURN_KEY] [--step-key STEP_KEY]\n                          [--usage-key USAGE_KEY]\n                          logfile\n",
+      "what-if": "usage: tokenledger what-if [-h] [--json] [--quiet]\n                           [--format {native,anthropic,openai}]\n                           [--turn-key TURN_KEY] [--step-key STEP_KEY]\n                           [--usage-key USAGE_KEY] --turn TURN --step STEP\n                           logfile\n",
+      "describe": "usage: tokenledger describe [-h] [--json] [--quiet]\n",
+      "mcp": "usage: tokenledger mcp [-h]\n"
+    }
+  }
+}

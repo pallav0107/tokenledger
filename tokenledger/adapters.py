@@ -25,10 +25,11 @@ correct totals, cache-read % and priming %, but a flat step structure.
 """
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Callable, Iterable, List, Optional, Union
 
+from ._jsonl import read_jsonl, show, to_count
+from .errors import TokenledgerError
 from .parse import Request
 
 
@@ -43,7 +44,25 @@ def _usage(record: dict, usage_key: Optional[str]) -> dict:
 
 def _int(d: dict, key: str, default: int = 0) -> int:
     v = d.get(key, default)
-    return int(v) if v is not None else default
+    return to_count(v, key) if v is not None else default
+
+
+def _label(record: dict, label: str) -> str:
+    if label:
+        return label
+    v = record.get("label")
+    if v is None:
+        return ""
+    if not isinstance(v, str):
+        raise TokenledgerError("TL_E_BAD_VALUE", f"field 'label' must be a string, got {show(v)}")
+    return v
+
+
+def _key_count(record: dict, key: str) -> int:
+    v = record.get(key)
+    if v is None:
+        raise TokenledgerError("TL_E_BAD_VALUE", f"record has no value for key '{key}'")
+    return to_count(v, key)
 
 
 def from_anthropic_usage(
@@ -65,7 +84,7 @@ def from_anthropic_usage(
         input_tokens=total_input,
         cache_read_tokens=cache_read,
         output_tokens=_int(u, "output_tokens"),
-        label=label or str(record.get("label", "")),
+        label=_label(record, label),
     )
 
 
@@ -87,7 +106,7 @@ def from_openai_usage(
         input_tokens=total_input,
         cache_read_tokens=cache_read,
         output_tokens=_int(u, "completion_tokens"),
-        label=label or str(record.get("label", "")),
+        label=_label(record, label),
     )
 
 
@@ -105,15 +124,15 @@ def _turn_step_resolver(
 ):
     def resolve(record: dict, idx: int):
         if turn_fn is not None:
-            turn = int(turn_fn(record))
+            turn = to_count(turn_fn(record), "turn")
         elif turn_key is not None:
-            turn = int(record[turn_key])
+            turn = _key_count(record, turn_key)
         else:
             turn = 1
         if step_fn is not None:
-            step = int(step_fn(record))
+            step = to_count(step_fn(record), "step")
         elif step_key is not None:
-            step = int(record[step_key])
+            step = _key_count(record, step_key)
         else:
             step = idx
         return turn, step
@@ -133,7 +152,9 @@ def from_records(
 ) -> List[Request]:
     """Convert an iterable of provider usage dicts into Request records."""
     if fmt not in _CONVERTERS:
-        raise ValueError(f"unknown format {fmt!r}; expected one of {sorted(_CONVERTERS)}")
+        raise TokenledgerError(
+            "TL_E_UNKNOWN_FORMAT", f"unknown format '{fmt}'; expected one of {', '.join(sorted(_CONVERTERS))}"
+        )
     convert = _CONVERTERS[fmt]
     resolve = _turn_step_resolver(turn_key, step_key, turn_fn, step_fn)
     out: List[Request] = []
@@ -155,17 +176,11 @@ def load_provider(
 ) -> List[Request]:
     """Load a JSONL usage log in a provider format into Request records.
 
-    Blank lines and lines starting with '#' are skipped. Each remaining line is
-    one JSON object carrying a usage record (either at top level or under a
-    `usage` key).
+    Same file rules as load_requests (docs/SPEC.md). Each remaining line is one JSON
+    object carrying a usage record (either at top level or under a `usage` key); every
+    token count must be a non-negative JSON integer.
     """
-    records: List[dict] = []
-    with open(path, "r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line or line.startswith("#"):
-                continue
-            records.append(json.loads(line))
+    records = read_jsonl(path)
     return from_records(
         records,
         fmt,

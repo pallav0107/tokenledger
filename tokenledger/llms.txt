@@ -1,0 +1,15 @@
+# tokenledger
+
+> tokenledger (PyPI/npm package `tokenledger-llm`, CLI `tokenledger`) reads JSONL request logs from multi-agent or multi-model LLM systems and reports where input tokens go: cache re-reads, re-sent priming, re-carried conversation, steps per turn, and the tokens saved by removing one step. It is read-only, has no dependencies, and offers a CLI with `--json` output, an MCP server (`tokenledger mcp`) and a Python API.
+
+Agents: call the tools directly on the log files in the working directory (never ask for pasted logs); for provider logs pass format plus turn_key/step_key; a bad log is a tool call too, quote error.code exactly; quote numbers as plain digits.
+
+- [AGENTS.md](AGENTS.md): exact commands, inputs, outputs, exit codes, error codes, examples and pitfalls
+- [README.md](README.md): install, log format, provider adapters
+- [docs/METHODOLOGY.md](docs/METHODOLOGY.md): the measurements behind the metrics
+- [schemas/](schemas/): JSON Schemas for every `--json` output, the error object and the tool definitions
+- `tokenledger describe --json`: tool definitions in Anthropic, OpenAI and MCP formats
+
+## Optional
+
+- [conformance/](conformance/): fixtures shared with the JavaScript port

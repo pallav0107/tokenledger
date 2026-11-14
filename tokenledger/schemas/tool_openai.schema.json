@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tokenledger/tool_openai",
+  "title": "OpenAI function-calling tool",
+  "type": "object",
+  "properties": {
+    "type": {
+      "const": "function"
+    },
+    "function": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]{1,64}$"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "object"
+            },
+            "properties": {
+              "type": "object"
+            },
+            "required": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "type"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "parameters"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "type",
+    "function"
+  ],
+  "additionalProperties": false
+}
